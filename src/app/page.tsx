@@ -8,7 +8,7 @@ import { OnboardingWizard } from "@/components/app/OnboardingWizard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { demoPosts } from "@/lib/demo-data";
 import type { Post } from "@/lib/types";
-import { FileQuestion } from "lucide-react";
+import { FileQuestion, Rocket, Star, TrendingUp } from "lucide-react";
 
 export default function Home() {
   const [posts, setPosts] = React.useState<Post[]>([]);
@@ -54,15 +54,15 @@ export default function Home() {
           onValueChange={setActiveTab}
           className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-3 md:w-auto md:inline-flex">
+          <TabsList className="grid w-full grid-cols-3 md:w-auto md:inline-flex bg-card border">
             <TabsTrigger value="emerging">
-              <span className="mr-2">🔥</span> Emerging
+              <TrendingUp className="mr-2 h-4 w-4" /> Emerging
             </TabsTrigger>
             <TabsTrigger value="heating">
-              <span className="mr-2">🚀</span> Heating
+              <Rocket className="mr-2 h-4 w-4" /> Heating
             </TabsTrigger>
             <TabsTrigger value="on-fire">
-              <span className="mr-2">🌟</span> On Fire
+              <Star className="mr-2 h-4 w-4 text-amber-400" /> On Fire
             </TabsTrigger>
           </TabsList>
 
@@ -88,7 +88,7 @@ export default function Home() {
 function ContentGrid({ posts }: { posts: Post[] }) {
   if (posts.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-96 text-center rounded-lg border-2 border-dashed bg-muted/50">
+      <div className="flex flex-col items-center justify-center h-96 text-center rounded-lg border-2 border-dashed bg-card">
         <FileQuestion className="w-16 h-16 text-muted-foreground mb-4" />
         <h3 className="text-xl font-semibold">No Trends Found</h3>
         <p className="text-muted-foreground mt-2 max-w-sm">

@@ -36,7 +36,7 @@ import { Badge } from "../ui/badge";
 export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <Sidebar>
+      <Sidebar variant="inset" collapsible="icon">
         <SidebarHeader>
           <Logo />
         </SidebarHeader>
@@ -94,10 +94,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </SidebarContent>
         <SidebarFooter className="border-t border-sidebar-border">
           <div className="p-4 space-y-4">
-             <div className="p-4 rounded-lg bg-sidebar-accent text-center">
-                 <h4 className="font-semibold text-sidebar-accent-foreground">Upgrade to Pro</h4>
-                 <p className="text-xs text-muted-foreground mt-1">Unlock unlimited alerts, full CSV exports, and more.</p>
-                 <Button size="sm" className="w-full mt-3 bg-primary text-primary-foreground hover:bg-primary/90">
+             <div className="p-4 rounded-lg bg-gradient-to-br from-primary via-primary/80 to-accent/80 text-center">
+                 <h4 className="font-semibold text-primary-foreground">Upgrade to Pro</h4>
+                 <p className="text-xs text-primary-foreground/80 mt-1">Unlock unlimited alerts, full CSV exports, and more.</p>
+                 <Button size="sm" className="w-full mt-3 bg-background/20 text-primary-foreground hover:bg-background/30 backdrop-blur-sm border border-white/20">
                     <Sparkles className="mr-2 h-4 w-4"/>
                     Upgrade
                  </Button>
