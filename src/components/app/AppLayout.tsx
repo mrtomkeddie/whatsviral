@@ -106,7 +106,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <SidebarSeparator />
           <div className="flex items-center gap-3 p-4">
             <Avatar>
-              <AvatarImage src="https://picsum.photos/seed/user/40/40" />
+              <AvatarImage src="https://picsum.photos/seed/user/40/40" data-ai-hint="person" />
               <AvatarFallback>GU</AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
