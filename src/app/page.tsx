@@ -15,24 +15,35 @@ import {
 import { Input } from "@/components/ui/input";
 import { Search, Youtube, Rss, Instagram, Loader2 } from "lucide-react";
 import { PostCard } from "@/components/app/PostCard";
-import { demoPosts } from "@/lib/demo-data";
 import type { Post } from "@/lib/types";
+import { searchContent } from "@/ai/flows/search-flow";
 
 export default function Home() {
   const [platform, setPlatform] = React.useState("youtube");
   const [isLoading, setIsLoading] = React.useState(false);
   const [results, setResults] = React.useState<Post[]>([]);
   const [searchPerformed, setSearchPerformed] = React.useState(false);
+  const [query, setQuery] = React.useState("");
+  const [searchMode, setSearchMode] = React.useState("keyword");
 
-  const handleFetchContent = () => {
+  const handleFetchContent = async () => {
     setSearchPerformed(true);
     setIsLoading(true);
     setResults([]);
-    // Simulate API call
-    setTimeout(() => {
-      setResults(demoPosts.filter((p) => p.platform === platform).slice(0, 8));
+    
+    try {
+      const response = await searchContent({
+        platform: platform as 'youtube' | 'reddit' | 'instagram',
+        query,
+        searchMode,
+      });
+      setResults(response.posts);
+    } catch (error) {
+      console.error("Failed to fetch content:", error);
+      // Optionally, show an error message to the user
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -51,7 +62,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-2 bg-card p-2 rounded-xl border shadow-sm">
-            <Select defaultValue="keyword">
+            <Select value={searchMode} onValueChange={setSearchMode}>
               <SelectTrigger className="md:col-span-1 h-12 text-base rounded-lg">
                 <SelectValue placeholder="Search Mode" />
               </SelectTrigger>
@@ -68,6 +79,8 @@ export default function Home() {
                 type="search"
                 placeholder="Enter a keyword, hashtag, channel..."
                 className="w-full h-12 pl-10 text-base rounded-lg"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
               />
             </div>
           </div>
