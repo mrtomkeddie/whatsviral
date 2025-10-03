@@ -10,14 +10,31 @@ import { demoPosts } from "@/lib/demo-data";
 import type { Post } from "@/lib/types";
 import { FileQuestion, Rocket, Star, TrendingUp } from "lucide-react";
 
+const TAB_CONFIG = {
+  emerging: {
+    label: "Emerging",
+    icon: TrendingUp,
+    filter: (post: Post) => post.momentumBucket === "Emerging",
+  },
+  heating: {
+    label: "Heating",
+    icon: Rocket,
+    filter: (post: Post) => post.momentumBucket === "Heating",
+  },
+  "on-fire": {
+    label: "On Fire",
+    icon: Star,
+    filter: (post: Post) => post.momentumBucket === "On Fire",
+  },
+};
+
 export default function Home() {
   const [posts, setPosts] = React.useState<Post[]>([]);
   const [showOnboarding, setShowOnboarding] = React.useState(false);
-  const [activeTab, setActiveTab] = React.useState<string>("emerging");
+  const [activeTab, setActiveTab] = React.useState<keyof typeof TAB_CONFIG>("emerging");
   const [lastUpdated, setLastUpdated] = React.useState(new Date());
 
   React.useEffect(() => {
-    // Simulate initial data fetch and check for first visit
     setPosts(demoPosts);
     const isFirstVisit = !localStorage.getItem("hasVisitedTrendTorch");
     if (isFirstVisit) {
@@ -25,7 +42,6 @@ export default function Home() {
       localStorage.setItem("hasVisitedTrendTorch", "true");
     }
 
-    // Simulate data freshness updates
     const interval = setInterval(() => {
       setLastUpdated(new Date());
     }, 60000); // every minute
@@ -35,15 +51,9 @@ export default function Home() {
 
   const handleOnboardingComplete = () => {
     setShowOnboarding(false);
-    // Here you would typically refetch data based on user's new sources
   };
 
-  const filteredPosts = posts.filter((post) => {
-    if (activeTab === "emerging") return post.momentumBucket === "Emerging";
-    if (activeTab === "heating") return post.momentumBucket === "Heating";
-    if (activeTab === "on-fire") return post.momentumBucket === "On Fire";
-    return false;
-  });
+  const filteredPosts = posts.filter(TAB_CONFIG[activeTab].filter);
 
   return (
     <AppLayout>
@@ -51,30 +61,22 @@ export default function Home() {
       <main className="flex-1 p-4 sm:p-6 lg:p-8">
         <Tabs
           defaultValue="emerging"
-          onValueChange={setActiveTab}
+          onValueChange={(value) => setActiveTab(value as keyof typeof TAB_CONFIG)}
           className="w-full"
         >
           <TabsList className="grid w-full grid-cols-3 md:w-auto md:inline-flex bg-card border">
-            <TabsTrigger value="emerging">
-              <TrendingUp className="mr-2 h-4 w-4" /> Emerging
-            </TabsTrigger>
-            <TabsTrigger value="heating">
-              <Rocket className="mr-2 h-4 w-4" /> Heating
-            </TabsTrigger>
-            <TabsTrigger value="on-fire">
-              <Star className="mr-2 h-4 w-4 text-amber-400" /> On Fire
-            </TabsTrigger>
+            {Object.entries(TAB_CONFIG).map(([key, { label, icon: Icon }]) => (
+              <TabsTrigger key={key} value={key}>
+                <Icon className="mr-2 h-4 w-4" /> {label}
+              </TabsTrigger>
+            ))}
           </TabsList>
 
-          <TabsContent value="emerging" className="mt-6">
-            <ContentGrid posts={filteredPosts} />
-          </TabsContent>
-          <TabsContent value="heating" className="mt-6">
-            <ContentGrid posts={filteredPosts} />
-          </TabsContent>
-          <TabsContent value="on-fire" className="mt-6">
-            <ContentGrid posts={filteredPosts} />
-          </TabsContent>
+          {Object.keys(TAB_CONFIG).map((key) => (
+            <TabsContent key={key} value={key} className="mt-6">
+              <ContentGrid posts={filteredPosts} />
+            </TabsContent>
+          ))}
         </Tabs>
       </main>
       <OnboardingWizard
