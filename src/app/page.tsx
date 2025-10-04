@@ -3,7 +3,6 @@
 
 import * as React from "react";
 import { AppLayout } from "@/components/app/AppLayout";
-import { Header } from "@/components/app/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Instagram, Loader2, Image as ImageIcon, Video, Layers, Calendar, ArrowDownUp, Heart, MessageCircle, Clock } from "lucide-react";
@@ -16,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 
 type TimeRange = "all" | "24h" | "7d" | "30d";
 type MediaType = "all" | "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM";
-type SortBy = "trending" | "likes" | "comments" | "newest";
+type SortBy = "trending" | "top" | "likes" | "comments" | "newest";
 
 
 export default function Home() {
@@ -53,6 +52,8 @@ export default function Home() {
   const onTabChange = (value: string) => {
     const newTab = value as "trending" | "top";
     setActiveTab(newTab);
+    // Set default sort order when tab changes
+    setSortBy(newTab);
     if(searchPerformed) {
         handleFetchContent(newTab);
     }
@@ -86,6 +87,8 @@ export default function Home() {
       switch (sortBy) {
         case 'trending':
           return (b.metrics.trendingScore || 0) - (a.metrics.trendingScore || 0);
+        case 'top':
+          return (b.metrics.topScore || 0) - (a.metrics.topScore || 0);
         case 'likes':
           return (b.metrics.likes || 0) - (a.metrics.likes || 0);
         case 'comments':
@@ -93,19 +96,17 @@ export default function Home() {
         case 'newest':
           return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
         default:
-          // Default to sorting by top score if in that tab
-          if(activeTab === 'top') return (b.metrics.topScore || 0) - (a.metrics.topScore || 0);
           return (b.metrics.trendingScore || 0) - (a.metrics.trendingScore || 0);
       }
     });
 
     setFilteredResults(results);
-  }, [allResults, timeRange, mediaType, sortBy, activeTab]);
+  }, [allResults, timeRange, mediaType, sortBy]);
 
 
   return (
     <AppLayout>
-      <Header />
+      
       <main className="flex-1 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
@@ -189,7 +190,11 @@ export default function Home() {
                                 <SelectValue placeholder="Sort by" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="trending">Trending</SelectItem>
+                                {activeTab === 'trending' ? (
+                                  <SelectItem value="trending">Trending</SelectItem>
+                                ) : (
+                                  <SelectItem value="top">Top Posts</SelectItem>
+                                )}
                                 <SelectItem value="likes">Most Likes</SelectItem>
                                 <SelectItem value="comments">Most Comments</SelectItem>
                                 <SelectItem value="newest">Newest</SelectItem>

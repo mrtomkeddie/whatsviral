@@ -3,7 +3,6 @@
 
 import * as React from 'react';
 import { AppLayout } from "@/components/app/AppLayout";
-import { Header } from "@/components/app/Header";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2, Search, UserX, LineChart, MessageCircle, Heart, Users, UserPlus, FileText } from 'lucide-react';
@@ -70,7 +69,7 @@ export default function AnalyticsPage() {
 
   return (
     <AppLayout>
-      <Header />
+      
       <main className="flex-1 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
