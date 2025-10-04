@@ -6,32 +6,43 @@ import { AppLayout } from "@/components/app/AppLayout";
 import { Header } from "@/components/app/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Instagram, Loader2 } from "lucide-react";
+import { Search, Instagram, Loader2, Image as ImageIcon, Video, Layers, Calendar, ArrowDownUp, Heart, MessageCircle, Clock } from "lucide-react";
 import { PostCard } from "@/components/app/PostCard";
 import { searchInstagramContent } from "@/ai/flows/search-flow";
 import type { InstagramPost } from "@/lib/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+
+type TimeRange = "all" | "24h" | "7d" | "30d";
+type MediaType = "all" | "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM";
+type SortBy = "trending" | "likes" | "comments" | "newest";
 
 
 export default function Home() {
   const [isLoading, setIsLoading] = React.useState(false);
-  const [results, setResults] = React.useState<InstagramPost[]>([]);
+  const [allResults, setAllResults] = React.useState<InstagramPost[]>([]);
+  const [filteredResults, setFilteredResults] = React.useState<InstagramPost[]>([]);
   const [searchPerformed, setSearchPerformed] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [activeTab, setActiveTab] = React.useState<"trending" | "top">("trending");
 
+  const [timeRange, setTimeRange] = React.useState<TimeRange>("all");
+  const [mediaType, setMediaType] = React.useState<MediaType>("all");
+  const [sortBy, setSortBy] = React.useState<SortBy>("trending");
+  
   const handleFetchContent = async (mode: "trending" | "top") => {
     if (!query) return;
     setSearchPerformed(true);
     setIsLoading(true);
-    setResults([]);
+    setAllResults([]);
     
     try {
       const response = await searchInstagramContent({
         hashtag: query,
         mode: mode,
       });
-      setResults(response.posts);
+      setAllResults(response.posts);
     } catch (error) {
       console.error("Failed to fetch content:", error);
     } finally {
@@ -50,6 +61,45 @@ export default function Home() {
   const handleSearch = () => {
     handleFetchContent(activeTab);
   }
+
+  React.useEffect(() => {
+    let results = [...allResults];
+
+    // Filter by time range
+    if (timeRange !== 'all') {
+      const now = new Date();
+      const hours = timeRange === '24h' ? 24 : timeRange === '7d' ? 24 * 7 : 24 * 30;
+      results = results.filter(post => {
+        const postDate = new Date(post.publishedAt);
+        const diffHours = (now.getTime() - postDate.getTime()) / (1000 * 60 * 60);
+        return diffHours <= hours;
+      });
+    }
+
+    // Filter by media type
+    if (mediaType !== 'all') {
+      results = results.filter(post => post.mediaType === mediaType);
+    }
+    
+    // Sort results
+    results.sort((a, b) => {
+      switch (sortBy) {
+        case 'trending':
+          return (b.metrics.trendingScore || 0) - (a.metrics.trendingScore || 0);
+        case 'likes':
+          return (b.metrics.likes || 0) - (a.metrics.likes || 0);
+        case 'comments':
+          return (b.metrics.comments || 0) - (a.metrics.comments || 0);
+        case 'newest':
+          return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+        default:
+          return 0;
+      }
+    });
+
+    setFilteredResults(results);
+  }, [allResults, timeRange, mediaType, sortBy]);
+
 
   return (
     <AppLayout>
@@ -98,6 +148,55 @@ export default function Home() {
                 <TabsTrigger value="trending">Trending</TabsTrigger>
                 <TabsTrigger value="top">Top Posts</TabsTrigger>
               </TabsList>
+
+              {searchPerformed && (
+                <div className="my-6 flex flex-wrap items-center justify-center gap-4 text-sm">
+                    <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <Select value={timeRange} onValueChange={(v) => setTimeRange(v as TimeRange)}>
+                            <SelectTrigger className="w-[120px] h-9">
+                                <SelectValue placeholder="Time range" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Time</SelectItem>
+                                <SelectItem value="24h">Last 24h</SelectItem>
+                                <SelectItem value="7d">Last 7d</SelectItem>
+                                <SelectItem value="30d">Last 30d</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Layers className="h-4 w-4 text-muted-foreground" />
+                        <Select value={mediaType} onValueChange={(v) => setMediaType(v as MediaType)}>
+                            <SelectTrigger className="w-[120px] h-9">
+                                <SelectValue placeholder="Media Type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Media</SelectItem>
+                                <SelectItem value="IMAGE">Image</SelectItem>
+                                <SelectItem value="VIDEO">Video</SelectItem>
+                                <SelectItem value="CAROUSEL_ALBUM">Carousel</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                     <Separator orientation="vertical" className="h-6 mx-2 hidden sm:block" />
+                     <div className="flex items-center gap-2">
+                        <ArrowDownUp className="h-4 w-4 text-muted-foreground" />
+                        <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortBy)}>
+                            <SelectTrigger className="w-[150px] h-9">
+                                <SelectValue placeholder="Sort by" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="trending">Trending</SelectItem>
+                                <SelectItem value="likes">Most Likes</SelectItem>
+                                <SelectItem value="comments">Most Comments</SelectItem>
+                                <SelectItem value="newest">Newest</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+              )}
+
               <TabsContent value="trending">
                 {renderResults()}
               </TabsContent>
@@ -122,22 +221,22 @@ export default function Home() {
       );
     }
 
-    if (searchPerformed && results.length === 0) {
+    if (searchPerformed && filteredResults.length === 0) {
       return (
         <div className="mt-8 text-center py-16 px-4 bg-card border rounded-xl">
           <Instagram className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-4 text-lg font-semibold">No Results Found</h3>
           <p className="mt-2 text-sm text-muted-foreground">
-            No items match your search. Try a different hashtag.
+            No items match your search. Try a different hashtag or adjust your filters.
           </p>
         </div>
       );
     }
 
-    if (results.length > 0) {
+    if (filteredResults.length > 0) {
       return (
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {results.map((post) => (
+          {filteredResults.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>

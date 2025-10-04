@@ -4,6 +4,7 @@
 import type { InstagramPost } from '@/lib/types';
 import {
   Card,
+  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -21,11 +22,15 @@ import {
   TrendingUp,
   Save,
   BookmarkCheck,
+  Image as ImageIcon,
+  Video,
+  Layers,
 } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 import { useSavedPosts } from '@/context/SavedPostsContext';
+import { Badge } from '../ui/badge';
 
 function formatMetric(num?: number): string {
     if (num === undefined) return '0';
@@ -57,6 +62,21 @@ function timeAgo(dateString: string): string {
     return `${Math.floor(seconds)}s`;
 }
 
+function MediaTypeIndicator({ type }: { type: InstagramPost['mediaType']}) {
+  const icon = {
+    'IMAGE': <ImageIcon className="w-3 h-3" />,
+    'VIDEO': <Video className="w-3 h-3" />,
+    'CAROUSEL_ALBUM': <Layers className="w-3 h-3" />,
+  }[type];
+
+  return (
+    <Badge variant="secondary" className="capitalize">
+      {icon}
+      <span className="ml-1.5">{type.replace('_', ' ').toLowerCase()}</span>
+    </Badge>
+  );
+}
+
 export function PostCard({ post }: { post: InstagramPost }) {
   const { savedPosts, addSavedPost, removeSavedPost } = useSavedPosts();
   const isSaved = savedPosts.some(p => p.id === post.id);
@@ -74,18 +94,21 @@ export function PostCard({ post }: { post: InstagramPost }) {
       {post.thumbnailUrl && (
         <div className="aspect-square relative">
             <Image src={post.thumbnailUrl} alt={post.caption} fill className="object-cover" />
+            <div className="absolute top-2 right-2">
+              <MediaTypeIndicator type={post.mediaType} />
+            </div>
         </div>
       )}
       <CardHeader>
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-2 mb-2">
+          <a href={`https://instagram.com/${post.author}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 mb-2 group">
             <div className="p-1.5 bg-secondary rounded-full">
-              <Instagram className="w-4 h-4" />
+              <Instagram className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
             </div>
-            <CardDescription className="font-medium text-xs uppercase tracking-wider">
-              {post.platform}
+            <CardDescription className="font-medium text-xs uppercase tracking-wider group-hover:text-primary transition-colors">
+              @{post.author}
             </CardDescription>
-          </div>
+          </a>
           <span className="text-xs text-muted-foreground">{timeAgo(post.publishedAt)} ago</span>
         </div>
         <CardDescription className="text-sm line-clamp-3 h-[3.75rem]">
@@ -95,7 +118,7 @@ export function PostCard({ post }: { post: InstagramPost }) {
         </CardDescription>
       </CardHeader>
       
-      <CardFooter className="flex-col items-start gap-3 mt-auto">
+      <CardFooter className="flex-col items-start gap-4 mt-auto">
         <div className="w-full flex justify-between items-center text-sm text-muted-foreground">
           <div className="flex gap-4 items-center">
             {post.metrics.likes !== undefined && (
@@ -163,9 +186,8 @@ PostCard.Skeleton = function PostCardSkeleton() {
                     </div>
                     <Skeleton className="h-6 w-10" />
                 </div>
-                <Skeleton className="h-px w-full my-1" />
-                <div className="w-full">
-                    <Skeleton className="h-8 w-full" />
+                <div className="w-full border-t pt-3 flex">
+                    <Skeleton className="h-9 w-full" />
                 </div>
             </CardFooter>
         </Card>
