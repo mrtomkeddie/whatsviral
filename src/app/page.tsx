@@ -125,7 +125,7 @@ export default function Home() {
     if (searchPerformed && results.length === 0) {
       return (
         <div className="mt-8 text-center py-16 px-4 bg-card border rounded-xl">
-          <Search className="mx-auto h-12 w-12 text-muted-foreground" />
+          <Instagram className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-4 text-lg font-semibold">No Results Found</h3>
           <p className="mt-2 text-sm text-muted-foreground">
             No items match your search. Try a different hashtag.
