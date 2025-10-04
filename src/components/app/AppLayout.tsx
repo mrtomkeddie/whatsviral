@@ -2,6 +2,8 @@
 "use client";
 
 import * as React from "react";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   SidebarProvider,
   Sidebar,
@@ -28,6 +30,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
   return (
     <SidebarProvider>
       <Sidebar variant="inset" collapsible="icon">
@@ -37,28 +41,45 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarContent className="p-2">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton href="#" isActive tooltip="Hashtag Search">
-                <Search />
-                Hashtag Search
-              </SidebarMenuButton>
+              <Link href="/" passHref legacyBehavior>
+                <SidebarMenuButton asChild isActive={pathname === '/'} tooltip="Hashtag Search">
+                  <a
+                  >
+                    <Search />
+                    Hashtag Search
+                  </a>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton href="#" tooltip="User Analytics">
-                <User />
-                User Analytics
-              </SidebarMenuButton>
+               <Link href="/analytics" passHref legacyBehavior>
+                <SidebarMenuButton asChild isActive={pathname === '/analytics'} tooltip="User Analytics">
+                  <a>
+                    <User />
+                    User Analytics
+                  </a>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton href="#" tooltip="Saved Items">
-                <Bookmark />
-                Saved Items
-              </SidebarMenuButton>
+              <Link href="/saved" passHref legacyBehavior>
+                <SidebarMenuButton asChild isActive={pathname === '/saved'} tooltip="Saved Items">
+                  <a>
+                    <Bookmark />
+                    Saved Items
+                  </a>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton href="#" tooltip="Alerts">
-                <Bell />
-                Alerts
-              </SidebarMenuButton>
+               <Link href="/alerts" passHref legacyBehavior>
+                <SidebarMenuButton asChild isActive={pathname === '/alerts'} tooltip="Alerts">
+                  <a>
+                    <Bell />
+                    Alerts
+                  </a>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
