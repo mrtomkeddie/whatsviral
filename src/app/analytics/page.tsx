@@ -161,63 +161,47 @@ export default function AnalyticsPage() {
                   </CardContent>
                 </Card>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Followers</CardTitle>
-                      <Users className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{formatMetric(profile.followers)}</div>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Following</CardTitle>
-                      <UserPlus className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{formatMetric(profile.following)}</div>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
-                      <FileText className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{formatMetric(profile.postCount)}</div>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Avg. Engagement</CardTitle>
-                      <LineChart className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{profile.engagementRate.toFixed(2)}%</div>
-                    </CardContent>
-                  </Card>
-                   <Card className="col-span-2 md:col-span-3 lg:col-span-2">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Average Metrics</CardTitle>
-                       <Heart className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent className="flex justify-around">
-                      <div className="text-center">
-                        <p className="text-2xl font-bold">{formatMetric(profile.avgLikes)}</p>
-                        <p className="text-xs text-muted-foreground">Avg. Likes</p>
-                      </div>
-                       <div className="text-center">
-                        <p className="text-2xl font-bold">{formatMetric(profile.avgComments)}</p>
-                        <p className="text-xs text-muted-foreground">Avg. Comments</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  <div className="lg:col-span-2 space-y-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">Followers</CardTitle>
+                          <Users className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-2xl font-bold">{formatMetric(profile.followers)}</div>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">Following</CardTitle>
+                          <UserPlus className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-2xl font-bold">{formatMetric(profile.following)}</div>
+                        </CardContent>
+                      </Card>
+                       <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">Avg. Engagement</CardTitle>
+                          <LineChart className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-2xl font-bold">{profile.engagementRate.toFixed(2)}%</div>
+                        </CardContent>
+                      </Card>
+                       <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
+                          <FileText className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-2xl font-bold">{formatMetric(profile.postCount)}</div>
+                        </CardContent>
+                      </Card>
+                    </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-                  <div className="lg:col-span-3 space-y-8">
                     <Card>
                       <CardHeader>
                         <CardTitle>Recent Posts</CardTitle>
@@ -258,7 +242,7 @@ export default function AnalyticsPage() {
                       </CardContent>
                     </Card>
                   </div>
-                  <div className="lg:col-span-2 space-y-8">
+                  <div className="lg:col-span-1 space-y-8">
                     <Card>
                         <CardHeader>
                             <CardTitle>Follower Growth</CardTitle>
