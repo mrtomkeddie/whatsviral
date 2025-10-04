@@ -14,6 +14,7 @@ export type InstagramPost = {
     likes?: number;
     comments?: number;
     trendingScore?: number;
+    topScore?: number;
   };
   thumbnailUrl?: string;
   mediaType: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM';

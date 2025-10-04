@@ -45,6 +45,7 @@ const searchContentFlow = ai.defineFlow(
         metrics: {
           ...post.metrics,
           trendingScore: parseFloat(trendingScore.toFixed(1)),
+          topScore: parseFloat(topScore.toFixed(1)),
         }
       };
     });
@@ -53,8 +54,7 @@ const searchContentFlow = ai.defineFlow(
         if (input.mode === 'trending') {
             return (b.metrics.trendingScore || 0) - (a.metrics.trendingScore || 0);
         }
-        // 'top' mode will be sorted by likes client-side by default, but we can pre-sort here as well.
-        return (b.metrics.likes || 0) - (a.metrics.likes || 0);
+        return (b.metrics.topScore || 0) - (a.metrics.topScore || 0);
     });
 
     return {

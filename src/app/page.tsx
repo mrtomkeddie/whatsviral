@@ -93,12 +93,14 @@ export default function Home() {
         case 'newest':
           return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
         default:
-          return 0;
+          // Default to sorting by top score if in that tab
+          if(activeTab === 'top') return (b.metrics.topScore || 0) - (a.metrics.topScore || 0);
+          return (b.metrics.trendingScore || 0) - (a.metrics.trendingScore || 0);
       }
     });
 
     setFilteredResults(results);
-  }, [allResults, timeRange, mediaType, sortBy]);
+  }, [allResults, timeRange, mediaType, sortBy, activeTab]);
 
 
   return (
@@ -237,7 +239,7 @@ export default function Home() {
       return (
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredResults.map((post) => (
-            <PostCard key={post.id} post={post} />
+            <PostCard key={post.id} post={post} activeTab={activeTab} />
           ))}
         </div>
       );

@@ -25,6 +25,7 @@ import {
   Image as ImageIcon,
   Video,
   Layers,
+  Award,
 } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 import Image from 'next/image';
@@ -77,7 +78,7 @@ function MediaTypeIndicator({ type }: { type: InstagramPost['mediaType']}) {
   );
 }
 
-export function PostCard({ post }: { post: InstagramPost }) {
+export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 'trending' | 'top' }) {
   const { savedPosts, addSavedPost, removeSavedPost } = useSavedPosts();
   const isSaved = savedPosts.some(p => p.id === post.id);
 
@@ -88,6 +89,11 @@ export function PostCard({ post }: { post: InstagramPost }) {
       addSavedPost(post);
     }
   };
+
+  const score = activeTab === 'trending' ? post.metrics.trendingScore : post.metrics.topScore;
+  const scoreLabel = activeTab === 'trending' ? 'Trending Score' : 'Top Score';
+  const ScoreIcon = activeTab === 'trending' ? TrendingUp : Award;
+
 
   return (
     <Card className="flex flex-col overflow-hidden transition-all hover:shadow-xl hover:-translate-y-1">
@@ -135,17 +141,17 @@ export function PostCard({ post }: { post: InstagramPost }) {
                 </div>
             )}
           </div>
-          {post.metrics.trendingScore !== undefined && (
+          {score !== undefined && (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex items-center gap-1.5 font-semibold text-primary cursor-pointer">
-                  <TrendingUp className="w-4 h-4" />
-                  <span>{post.metrics.trendingScore.toFixed(1)}</span>
+                  <ScoreIcon className="w-4 h-4" />
+                  <span>{score.toFixed(1)}</span>
                 </div>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Trending Score: {post.metrics.trendingScore.toFixed(1)}</p>
+                <p>{scoreLabel}: {score.toFixed(1)}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
