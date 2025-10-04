@@ -1,7 +1,7 @@
 
 'use client';
 
-import type { Post } from '@/lib/types';
+import type { InstagramPost } from '@/lib/types';
 import {
   Card,
   CardContent,
@@ -10,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import {
   Tooltip,
   TooltipContent,
@@ -18,23 +17,15 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {
-  ArrowUp,
   MessageCircle,
   Heart,
-  Youtube,
-  Rss,
   Instagram,
-  Eye,
-  TrendingUp
+  TrendingUp,
+  Save
 } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 import Image from 'next/image';
-
-const platformIcons: Record<string, React.ReactNode> = {
-  youtube: <Youtube className="w-4 h-4" />,
-  reddit: <Rss className="w-4 h-4" />,
-  instagram: <Instagram className="w-4 h-4" />,
-};
+import { Button } from '../ui/button';
 
 function formatMetric(num?: number): string {
     if (num === undefined) return '0';
@@ -43,48 +34,59 @@ function formatMetric(num?: number): string {
     return `${(num / 1000000).toFixed(1)}M`;
 }
 
-export function PostCard({ post }: { post: Post }) {
+function timeAgo(dateString: string): string {
+    const date = new Date(dateString);
+    const now = new Date();
+    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  
+    let interval = seconds / 31536000;
+    if (interval > 1) return `${Math.floor(interval)}y`;
+  
+    interval = seconds / 2592000;
+    if (interval > 1) return `${Math.floor(interval)}mo`;
+  
+    interval = seconds / 86400;
+    if (interval > 1) return `${Math.floor(interval)}d`;
+  
+    interval = seconds / 3600;
+    if (interval > 1) return `${Math.floor(interval)}h`;
+  
+    interval = seconds / 60;
+    if (interval > 1) return `${Math.floor(interval)}m`;
+  
+    return `${Math.floor(seconds)}s`;
+}
+
+export function PostCard({ post }: { post: InstagramPost }) {
   return (
     <Card className="flex flex-col overflow-hidden transition-all hover:shadow-xl hover:-translate-y-1">
       {post.thumbnailUrl && (
-        <div className="aspect-video relative">
-            <Image src={post.thumbnailUrl} alt={post.title} fill className="object-cover" />
+        <div className="aspect-square relative">
+            <Image src={post.thumbnailUrl} alt={post.caption} fill className="object-cover" />
         </div>
       )}
       <CardHeader>
-        <div className="flex items-center gap-2 mb-2">
-          <div className="p-1.5 bg-secondary rounded-full">
-            {platformIcons[post.platform]}
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="p-1.5 bg-secondary rounded-full">
+              <Instagram className="w-4 h-4" />
+            </div>
+            <CardDescription className="font-medium text-xs uppercase tracking-wider">
+              {post.platform}
+            </CardDescription>
           </div>
-          <CardDescription className="font-medium text-xs uppercase tracking-wider">
-            {post.platform}
-          </CardDescription>
+          <span className="text-xs text-muted-foreground">{timeAgo(post.publishedAt)} ago</span>
         </div>
-        <CardTitle className="text-lg leading-snug">
+        <CardDescription className="text-sm line-clamp-3 h-[3.75rem]">
           <a href={post.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
-            {post.title}
+            {post.caption}
           </a>
-        </CardTitle>
-        <CardDescription className="text-xs pt-1">
-          by {post.author} &middot; {new Date(post.publishedAt).toLocaleDateString()}
         </CardDescription>
       </CardHeader>
       
       <CardFooter className="flex-col items-start gap-3 mt-auto">
         <div className="w-full flex justify-between items-center text-sm text-muted-foreground">
           <div className="flex gap-4 items-center">
-            {post.metrics.views !== undefined && (
-                <div className="flex items-center gap-1.5" title="Views">
-                    <Eye className="w-4 h-4" />
-                    <span>{formatMetric(post.metrics.views)}</span>
-                </div>
-            )}
-             {post.metrics.upvotes !== undefined && (
-                <div className="flex items-center gap-1.5" title="Upvotes">
-                    <ArrowUp className="w-4 h-4" />
-                    <span>{formatMetric(post.metrics.upvotes)}</span>
-                </div>
-            )}
             {post.metrics.likes !== undefined && (
                 <div className="flex items-center gap-1.5" title="Likes">
                     <Heart className="w-4 h-4" />
@@ -110,11 +112,16 @@ export function PostCard({ post }: { post: Post }) {
               </TooltipTrigger>
               <TooltipContent>
                 <p>Trending Score: {post.metrics.trendingScore.toFixed(1)}</p>
-                <p className="text-xs text-muted-foreground">Based on recent engagement velocity.</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
           )}
+        </div>
+        <div className="w-full border-t pt-3 flex">
+            <Button variant="ghost" size="sm" className="flex-1 justify-center">
+                <Save className="mr-2"/>
+                Save
+            </Button>
         </div>
       </CardFooter>
     </Card>
@@ -124,15 +131,18 @@ export function PostCard({ post }: { post: Post }) {
 PostCard.Skeleton = function PostCardSkeleton() {
     return (
         <Card className="flex flex-col">
-            <Skeleton className="aspect-video w-full" />
+            <Skeleton className="aspect-square w-full" />
             <CardHeader>
-                <div className="flex items-center gap-2 mb-2">
-                    <Skeleton className="h-8 w-8 rounded-full" />
-                    <Skeleton className="h-4 w-20" />
+                <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                        <Skeleton className="h-8 w-8 rounded-full" />
+                        <Skeleton className="h-4 w-20" />
+                    </div>
+                    <Skeleton className="h-4 w-10" />
                 </div>
-                <Skeleton className="h-5 w-full" />
-                <Skeleton className="h-5 w-3/4" />
-                 <Skeleton className="h-3 w-1/2 mt-1" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
             </CardHeader>
             <CardFooter className="flex-col items-start gap-3 mt-auto">
                 <div className="w-full flex justify-between items-center">
@@ -141,6 +151,10 @@ PostCard.Skeleton = function PostCardSkeleton() {
                         <Skeleton className="h-5 w-12" />
                     </div>
                     <Skeleton className="h-6 w-10" />
+                </div>
+                <Skeleton className="h-px w-full my-1" />
+                <div className="w-full">
+                    <Skeleton className="h-8 w-full" />
                 </div>
             </CardFooter>
         </Card>

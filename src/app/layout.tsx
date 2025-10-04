@@ -1,10 +1,11 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'Viral Content Finder',
-  description: 'Find the next viral hit before it takes off.',
+  title: 'TrendTorch',
+  description: 'Find the next viral hit on Instagram before it takes off.',
 };
 
 export default function RootLayout({

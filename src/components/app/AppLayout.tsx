@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -18,10 +19,8 @@ import {
   User,
   Settings,
   HelpCircle,
-  Shield,
-  BookOpen,
-  History,
-  Instagram
+  Search,
+  Bookmark
 } from "lucide-react";
 import { Logo } from "@/components/icons/Logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -38,27 +37,27 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarContent className="p-2">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton href="#" isActive tooltip="Home">
-                <Home />
-                Home
+              <SidebarMenuButton href="#" isActive tooltip="Hashtag Search">
+                <Search />
+                Hashtag Search
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton href="#" tooltip="Saved Searches">
-                <History />
-                Saved Searches
+              <SidebarMenuButton href="#" tooltip="User Analytics">
+                <User />
+                User Analytics
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton href="#" tooltip="Saved Items">
+                <Bookmark />
+                Saved Items
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton href="#" tooltip="Alerts">
                 <Bell />
                 Alerts
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-               <SidebarMenuButton href="#" tooltip="Connect Instagram">
-                <Instagram />
-                Connect Instagram
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -87,9 +86,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="flex-1 overflow-hidden">
               <p className="truncate font-semibold text-sm">Guest User</p>
             </div>
-            <SidebarMenuButton asChild size="icon" className="h-8 w-8">
-              <a href="#"><Settings /></a>
-            </SidebarMenuButton>
           </div>
         </SidebarFooter>
       </Sidebar>

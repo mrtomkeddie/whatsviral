@@ -1,13 +1,13 @@
 
 'use server';
 /**
- * @fileOverview A flow for searching content from different platforms.
+ * @fileOverview A flow for searching content from Instagram.
  *
- * - searchContent - A function that handles the content search process.
+ * - searchInstagramContent - A function that handles the content search process.
  */
 
 import { ai } from '@/ai/genkit';
-import { demoPosts } from '@/lib/demo-data';
+import { demoInstagramPosts } from '@/lib/demo-data';
 import {
   SearchContentInputSchema,
   SearchContentOutputSchema,
@@ -15,7 +15,7 @@ import {
   type SearchContentOutput,
 } from '@/lib/types';
 
-export async function searchContent(input: SearchContentInput): Promise<SearchContentOutput> {
+export async function searchInstagramContent(input: SearchContentInput): Promise<SearchContentOutput> {
   return searchContentFlow(input);
 }
 
@@ -26,13 +26,18 @@ const searchContentFlow = ai.defineFlow(
     outputSchema: SearchContentOutputSchema,
   },
   async (input) => {
-    // This is where we'll eventually call the real APIs.
-    // For now, we'll return mock data based on the platform.
+    // This is where we'll eventually call the real Instagram Graph API.
+    // For now, we'll return mock data.
     
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    const results = demoPosts.filter((p) => p.platform === input.platform);
+    const results = demoInstagramPosts.sort((a, b) => {
+        if (input.mode === 'trending') {
+            return (b.metrics.trendingScore || 0) - (a.metrics.trendingScore || 0);
+        }
+        return (b.metrics.likes || 0) - (a.metrics.likes || 0);
+    });
 
     return {
       posts: results,
