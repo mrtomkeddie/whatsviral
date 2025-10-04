@@ -41,43 +41,42 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarContent className="p-2">
           <SidebarMenu>
             <SidebarMenuItem>
-              <Link href="/" passHref legacyBehavior>
+              <Link href="/">
                 <SidebarMenuButton asChild isActive={pathname === '/'} tooltip="Hashtag Search">
-                  <a
-                  >
+                  <span>
                     <Search />
                     Hashtag Search
-                  </a>
+                  </span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
-               <Link href="/analytics" passHref legacyBehavior>
+               <Link href="/analytics">
                 <SidebarMenuButton asChild isActive={pathname === '/analytics'} tooltip="User Analytics">
-                  <a>
+                  <span>
                     <User />
                     User Analytics
-                  </a>
+                  </span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <Link href="/saved" passHref legacyBehavior>
+              <Link href="/saved">
                 <SidebarMenuButton asChild isActive={pathname === '/saved'} tooltip="Saved Items">
-                  <a>
+                  <span>
                     <Bookmark />
                     Saved Items
-                  </a>
+                  </span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
-               <Link href="/alerts" passHref legacyBehavior>
+               <Link href="/alerts">
                 <SidebarMenuButton asChild isActive={pathname === '/alerts'} tooltip="Alerts">
-                  <a>
+                  <span>
                     <Bell />
                     Alerts
-                  </a>
+                  </span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
