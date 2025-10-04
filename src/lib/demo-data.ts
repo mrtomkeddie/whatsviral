@@ -1,5 +1,5 @@
 
-import type { InstagramPost } from './types';
+import type { InstagramPost, InstagramUserProfile } from './types';
 
 export const demoInstagramPosts: InstagramPost[] = [
   {
@@ -44,7 +44,7 @@ export const demoInstagramPosts: InstagramPost[] = [
       comments: 400,
       trendingScore: 91.0,
     },
-    thumbnailUrl: 'https://picsum.photos/seed/ig3/480/480',
+thumbnailUrl: 'https://picsum.photos/seed/ig3/480/480',
     mediaType: 'IMAGE',
   },
   {
@@ -63,3 +63,84 @@ export const demoInstagramPosts: InstagramPost[] = [
     mediaType: 'VIDEO',
   },
 ];
+
+export const demoUserProfile: InstagramUserProfile = {
+  id: 'user123',
+  username: 'travel.junkie',
+  fullName: 'Alex Doe',
+  profilePictureUrl: 'https://picsum.photos/seed/user123/150/150',
+  followers: 125000,
+  following: 500,
+  postCount: 789,
+  engagementRate: 2.5,
+  avgLikes: 3125,
+  avgComments: 150,
+  recentPosts: [
+    {
+      id: 'post1',
+      platform: 'instagram',
+      caption: 'Golden hour in Santorini. Unforgettable!',
+      author: 'travel.junkie',
+      url: 'https://instagram.com/p/post1',
+      publishedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+      metrics: { likes: 4500, comments: 230 },
+      thumbnailUrl: 'https://picsum.photos/seed/post1/480/480',
+      mediaType: 'IMAGE',
+    },
+    {
+      id: 'post2',
+      platform: 'instagram',
+      caption: 'Exploring the vibrant streets of Tokyo.',
+      author: 'travel.junkie',
+      url: 'https://instagram.com/p/post2',
+      publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+      metrics: { likes: 3800, comments: 190 },
+      thumbnailUrl: 'https://picsum.photos/seed/post2/480/480',
+      mediaType: 'IMAGE',
+    },
+    {
+      id: 'post3',
+      platform: 'instagram',
+      caption: 'A quick reel of my trip to the Amazon!',
+      author: 'travel.junkie',
+      url: 'https://instagram.com/p/post3',
+      publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      metrics: { likes: 6200, comments: 450 },
+      thumbnailUrl: 'https://picsum.photos/seed/post3/480/480',
+      mediaType: 'VIDEO',
+    },
+    {
+      id: 'post4',
+      platform: 'instagram',
+      caption: 'What to pack for a weekend getaway. #traveltips',
+      author: 'travel.junkie',
+      url: 'https://instagram.com/p/post4',
+      publishedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+      metrics: { likes: 2900, comments: 120 },
+      thumbnailUrl: 'https://picsum.photos/seed/post4/480/480',
+      mediaType: 'CAROUSEL_ALBUM',
+    },
+     {
+      id: 'post5',
+      platform: 'instagram',
+      caption: 'Lost in the grand bazaar of Istanbul.',
+      author: 'travel.junkie',
+      url: 'https://instagram.com/p/post5',
+      publishedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+      metrics: { likes: 4100, comments: 210 },
+      thumbnailUrl: 'https://picsum.photos/seed/post5/480/480',
+      mediaType: 'IMAGE',
+    },
+     {
+      id: 'post6',
+      platform: 'instagram',
+      caption: 'Sunrise over the Sahara desert.',
+      author: 'travel.junkie',
+      url: 'https://instagram.com/p/post6',
+      publishedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+      metrics: { likes: 5300, comments: 300 },
+      thumbnailUrl: 'https://picsum.photos/seed/post6/480/480',
+      mediaType: 'IMAGE',
+    }
+  ]
+};
