@@ -1,12 +1,9 @@
 
-import type {Metadata} from 'next';
-import './globals.css';
-import { Toaster } from "@/components/ui/toaster"
+'use client';
 
-export const metadata: Metadata = {
-  title: 'TrendTorch',
-  description: 'Find the next viral hit on Instagram before it takes off.',
-};
+import './globals.css';
+import { Toaster } from "@/components/ui/toaster";
+import { SavedPostsProvider } from '@/context/SavedPostsContext';
 
 export default function RootLayout({
   children,
@@ -21,7 +18,9 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        {children}
+        <SavedPostsProvider>
+          {children}
+        </SavedPostsProvider>
         <Toaster />
       </body>
     </html>

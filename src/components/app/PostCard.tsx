@@ -4,11 +4,9 @@
 import type { InstagramPost } from '@/lib/types';
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import {
   Tooltip,
@@ -21,11 +19,13 @@ import {
   Heart,
   Instagram,
   TrendingUp,
-  Save
+  Save,
+  BookmarkCheck,
 } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 import Image from 'next/image';
 import { Button } from '../ui/button';
+import { useSavedPosts } from '@/context/SavedPostsContext';
 
 function formatMetric(num?: number): string {
     if (num === undefined) return '0';
@@ -58,6 +58,17 @@ function timeAgo(dateString: string): string {
 }
 
 export function PostCard({ post }: { post: InstagramPost }) {
+  const { savedPosts, addSavedPost, removeSavedPost } = useSavedPosts();
+  const isSaved = savedPosts.some(p => p.id === post.id);
+
+  const handleSaveClick = () => {
+    if (isSaved) {
+      removeSavedPost(post.id);
+    } else {
+      addSavedPost(post);
+    }
+  };
+
   return (
     <Card className="flex flex-col overflow-hidden transition-all hover:shadow-xl hover:-translate-y-1">
       {post.thumbnailUrl && (
@@ -118,9 +129,9 @@ export function PostCard({ post }: { post: InstagramPost }) {
           )}
         </div>
         <div className="w-full border-t pt-3 flex">
-            <Button variant="ghost" size="sm" className="flex-1 justify-center">
-                <Save className="mr-2"/>
-                Save
+            <Button variant={isSaved ? "secondary" : "ghost"} size="sm" className="flex-1 justify-center" onClick={handleSaveClick}>
+                {isSaved ? <BookmarkCheck className="mr-2"/> : <Save className="mr-2"/>}
+                {isSaved ? "Saved" : "Save"}
             </Button>
         </div>
       </CardFooter>
