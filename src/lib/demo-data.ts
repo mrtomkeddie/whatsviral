@@ -12,7 +12,6 @@ export const demoInstagramPosts: InstagramPost[] = [
     metrics: {
       likes: 1200,
       comments: 80,
-      trendingScore: 95.5,
     },
     thumbnailUrl: 'https://picsum.photos/seed/ig1/480/480',
     mediaType: 'IMAGE',
@@ -27,7 +26,6 @@ export const demoInstagramPosts: InstagramPost[] = [
     metrics: {
       likes: 5400,
       comments: 250,
-      trendingScore: 88.2,
     },
     thumbnailUrl: 'https://picsum.photos/seed/ig2/480/480',
     mediaType: 'VIDEO',
@@ -42,7 +40,6 @@ export const demoInstagramPosts: InstagramPost[] = [
     metrics: {
       likes: 8000,
       comments: 400,
-      trendingScore: 91.0,
     },
 thumbnailUrl: 'https://picsum.photos/seed/ig3/480/480',
     mediaType: 'IMAGE',
@@ -57,7 +54,6 @@ thumbnailUrl: 'https://picsum.photos/seed/ig3/480/480',
     metrics: {
       likes: 2500,
       comments: 150,
-      trendingScore: 98.1,
     },
     thumbnailUrl: 'https://picsum.photos/seed/ig4/480/480',
     mediaType: 'VIDEO',
@@ -79,7 +75,7 @@ export const demoUserProfile: InstagramUserProfile = {
     {
       id: 'post1',
       platform: 'instagram',
-      caption: 'Golden hour in Santorini. Unforgettable!',
+      caption: 'Golden hour in Santorini. Unforgettable! Featuring my friend @photo.fiend',
       author: 'travel.junkie',
       url: 'https://instagram.com/p/post1',
       publishedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -90,7 +86,7 @@ export const demoUserProfile: InstagramUserProfile = {
     {
       id: 'post2',
       platform: 'instagram',
-      caption: 'Exploring the vibrant streets of Tokyo.',
+      caption: 'Exploring the vibrant streets of Tokyo with @tokyo.explorer.',
       author: 'travel.junkie',
       url: 'https://instagram.com/p/post2',
       publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
@@ -101,7 +97,7 @@ export const demoUserProfile: InstagramUserProfile = {
     {
       id: 'post3',
       platform: 'instagram',
-      caption: 'A quick reel of my trip to the Amazon!',
+      caption: 'A quick reel of my trip to the Amazon! Big thanks to @rainforest.guides for the tour.',
       author: 'travel.junkie',
       url: 'https://instagram.com/p/post3',
       publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
@@ -112,7 +108,7 @@ export const demoUserProfile: InstagramUserProfile = {
     {
       id: 'post4',
       platform: 'instagram',
-      caption: 'What to pack for a weekend getaway. #traveltips',
+      caption: 'What to pack for a weekend getaway. #traveltips Thanks @everyday.carry for the gear!',
       author: 'travel.junkie',
       url: 'https://instagram.com/p/post4',
       publishedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -123,7 +119,7 @@ export const demoUserProfile: InstagramUserProfile = {
      {
       id: 'post5',
       platform: 'instagram',
-      caption: 'Lost in the grand bazaar of Istanbul.',
+      caption: 'Lost in the grand bazaar of Istanbul. @photo.fiend took this shot!',
       author: 'travel.junkie',
       url: 'https://instagram.com/p/post5',
       publishedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
@@ -134,7 +130,7 @@ export const demoUserProfile: InstagramUserProfile = {
      {
       id: 'post6',
       platform: 'instagram',
-      caption: 'Sunrise over the Sahara desert.',
+      caption: 'Sunrise over the Sahara desert. An amazing experience organized by @desert.adventures.',
       author: 'travel.junkie',
       url: 'https://instagram.com/p/post6',
       publishedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
@@ -142,5 +138,22 @@ export const demoUserProfile: InstagramUserProfile = {
       thumbnailUrl: 'https://picsum.photos/seed/post6/480/480',
       mediaType: 'IMAGE',
     }
-  ]
+  ],
+  followerHistory: [
+    { date: 'Jan', value: 110000 },
+    { date: 'Feb', value: 112000 },
+    { date: 'Mar', value: 115000 },
+    { date: 'Apr', value: 118000 },
+    { date: 'May', value: 122000 },
+    { date: 'Jun', value: 125000 },
+  ],
+  engagementHistory: [
+    { date: 'Jan', value: 2.8 },
+    { date: 'Feb', value: 2.6 },
+    { date: 'Mar', value: 2.9 },
+    { date: 'Apr', value: 2.7 },
+    { date: 'May', value: 2.4 },
+    { date: 'Jun', value: 2.5 },
+  ],
+  topMentions: [], // Will be populated by the flow
 };

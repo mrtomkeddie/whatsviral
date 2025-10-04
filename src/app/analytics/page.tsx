@@ -5,14 +5,17 @@ import * as React from 'react';
 import { AppLayout } from "@/components/app/AppLayout";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2, Search, UserX, LineChart, MessageCircle, Heart, Users, UserPlus, FileText } from 'lucide-react';
+import { Loader2, Search, UserX, LineChart, MessageCircle, Heart, Users, UserPlus, FileText, AtSign } from 'lucide-react';
 import { getUserAnalytics } from '@/ai/flows/user-analytics-flow';
-import type { InstagramUserProfile, InstagramPost } from '@/lib/types';
+import type { InstagramUserProfile, HistoryPoint } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Line, LineChart as RechartsLineChart } from 'recharts';
+import { ChartConfig, ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
+
 
 function formatMetric(num?: number): string {
     if (num === undefined) return '0';
@@ -43,6 +46,26 @@ function timeAgo(dateString: string): string {
   
     return `${Math.floor(seconds)}s`;
 }
+
+const chartTooltipConfig = {
+  value: {
+    label: "Value",
+  },
+} satisfies ChartConfig
+
+const followersChartConfig = {
+    value: {
+      label: "Followers",
+      color: "hsl(var(--chart-1))",
+    },
+} satisfies ChartConfig
+
+const engagementChartConfig = {
+    value: {
+      label: "Engagement",
+      color: "hsl(var(--chart-2))",
+    },
+} satisfies ChartConfig
 
 
 export default function AnalyticsPage() {
@@ -193,45 +216,106 @@ export default function AnalyticsPage() {
                   </Card>
                 </div>
 
-                <Card>
-                    <CardHeader>
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                  <div className="lg:col-span-3 space-y-8">
+                    <Card>
+                      <CardHeader>
                         <CardTitle>Recent Posts</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="w-[100px]">Preview</TableHead>
-                                    <TableHead>Caption</TableHead>
-                                    <TableHead>Type</TableHead>
-                                    <TableHead>Likes</TableHead>
-                                    <TableHead>Comments</TableHead>
-                                    <TableHead>Published</TableHead>
-                                    <TableHead className="text-right">Link</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {profile.recentPosts.map(post => (
-                                    <TableRow key={post.id}>
-                                        <TableCell>
-                                            {post.thumbnailUrl && <Image src={post.thumbnailUrl} alt={post.caption.substring(0, 30)} width={64} height={64} className="rounded-md object-cover aspect-square" />}
-                                        </TableCell>
-                                        <TableCell className="max-w-xs truncate">{post.caption}</TableCell>
-                                        <TableCell><Badge variant="secondary">{post.mediaType}</Badge></TableCell>
-                                        <TableCell>{formatMetric(post.metrics.likes)}</TableCell>
-                                        <TableCell>{formatMetric(post.metrics.comments)}</TableCell>
-                                        <TableCell>{timeAgo(post.publishedAt)} ago</TableCell>
-                                        <TableCell className="text-right">
-                                            <Button asChild variant="ghost" size="sm">
-                                                <a href={post.url} target="_blank" rel="noopener noreferrer">View</a>
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
+                      </CardHeader>
+                      <CardContent>
+                          <Table>
+                              <TableHeader>
+                                  <TableRow>
+                                      <TableHead className="w-[100px]">Preview</TableHead>
+                                      <TableHead>Caption</TableHead>
+                                      <TableHead>Type</TableHead>
+                                      <TableHead>Likes</TableHead>
+                                      <TableHead>Comments</TableHead>
+                                      <TableHead>Published</TableHead>
+                                      <TableHead className="text-right">Link</TableHead>
+                                  </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                  {profile.recentPosts.map(post => (
+                                      <TableRow key={post.id}>
+                                          <TableCell>
+                                              {post.thumbnailUrl && <Image src={post.thumbnailUrl} alt={post.caption.substring(0, 30)} width={64} height={64} className="rounded-md object-cover aspect-square" />}
+                                          </TableCell>
+                                          <TableCell className="max-w-xs truncate">{post.caption}</TableCell>
+                                          <TableCell><Badge variant="secondary">{post.mediaType}</Badge></TableCell>
+                                          <TableCell>{formatMetric(post.metrics.likes)}</TableCell>
+                                          <TableCell>{formatMetric(post.metrics.comments)}</TableCell>
+                                          <TableCell>{timeAgo(post.publishedAt)} ago</TableCell>
+                                          <TableCell className="text-right">
+                                              <Button asChild variant="ghost" size="sm">
+                                                  <a href={post.url} target="_blank" rel="noopener noreferrer">View</a>
+                                              </Button>
+                                          </TableCell>
+                                      </TableRow>
+                                  ))}
+                              </TableBody>
+                          </Table>
+                      </CardContent>
+                    </Card>
+                  </div>
+                  <div className="lg:col-span-2 space-y-8">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Follower Growth</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <ChartContainer config={followersChartConfig} className="h-[200px] w-full">
+                                <RechartsLineChart data={profile.followerHistory} margin={{ left: 12, right: 12 }}>
+                                    <CartesianGrid vertical={false} />
+                                    <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => value.slice(0, 3)} />
+                                    <YAxis tickFormatter={(value) => formatMetric(value)} />
+                                    <Tooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
+                                    <Line dataKey="value" type="monotone" stroke="var(--color-value)" strokeWidth={2} dot={false} />
+                                </RechartsLineChart>
+                            </ChartContainer>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Engagement Rate Trend</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <ChartContainer config={engagementChartConfig} className="h-[200px] w-full">
+                                <RechartsLineChart data={profile.engagementHistory} margin={{ left: 12, right: 12 }}>
+                                    <CartesianGrid vertical={false} />
+                                    <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => value.slice(0, 3)} />
+                                    <YAxis tickFormatter={(value) => `${value}%`} domain={[0, 'dataMax + 1']} />
+                                    <Tooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
+                                    <Line dataKey="value" type="monotone" stroke="var(--color-value)" strokeWidth={2} dot={false} />
+                                </RechartsLineChart>
+                            </ChartContainer>
+                        </CardContent>
+                    </Card>
+                     <Card>
+                        <CardHeader>
+                            <CardTitle>Top Mentions</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            {profile.topMentions.length > 0 ? (
+                                <div className="space-y-4">
+                                    {profile.topMentions.map(mention => (
+                                        <div key={mention.username} className="flex items-center justify-between">
+                                            <a href={`https://instagram.com/${mention.username}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group">
+                                                <AtSign className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+                                                <span className="font-medium group-hover:underline">{mention.username}</span>
+                                            </a>
+                                            <Badge variant="secondary">{mention.count} {mention.count > 1 ? 'mentions' : 'mention'}</Badge>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-sm text-muted-foreground">No frequent mentions found in recent posts.</p>
+                            )}
+                        </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
               </div>
             )}
 

@@ -20,6 +20,16 @@ export type InstagramPost = {
   mediaType: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM';
 };
 
+export type HistoryPoint = {
+  date: string;
+  value: number;
+};
+
+export type Mention = {
+  username: string;
+  count: number;
+};
+
 export type InstagramUserProfile = {
   id: string;
   username: string;
@@ -32,6 +42,9 @@ export type InstagramUserProfile = {
   avgLikes: number;
   avgComments: number;
   recentPosts: InstagramPost[];
+  followerHistory: HistoryPoint[];
+  engagementHistory: HistoryPoint[];
+  topMentions: Mention[];
 };
 
 
