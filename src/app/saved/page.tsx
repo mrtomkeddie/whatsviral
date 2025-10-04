@@ -14,11 +14,11 @@ export default function SavedPage() {
       
       <main className="flex-1 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-12">
+          <div className="mb-12 text-center">
             <h1 className="text-4xl sm:text-5xl font-bold font-headline tracking-tight">
               Saved Items
             </h1>
-            <p className="mt-4 text-lg text-muted-foreground max-w-3xl">
+            <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
               Your collection of saved Instagram posts.
             </p>
           </div>
