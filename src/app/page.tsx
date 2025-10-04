@@ -29,6 +29,8 @@ export default function Home() {
   const [timeRange, setTimeRange] = React.useState<TimeRange>("all");
   const [mediaType, setMediaType] = React.useState<MediaType>("all");
   const [sortBy, setSortBy] = React.useState<SortBy>("trending");
+  const [minLikes, setMinLikes] = React.useState('');
+  const [minComments, setMinComments] = React.useState('');
   
   const handleFetchContent = async (mode: "trending" | "top") => {
     if (!query) return;
@@ -81,6 +83,22 @@ export default function Home() {
     if (mediaType !== 'all') {
       results = results.filter(post => post.mediaType === mediaType);
     }
+
+    // Filter by min likes
+    if (minLikes) {
+        const likes = parseInt(minLikes, 10);
+        if (!isNaN(likes)) {
+            results = results.filter(post => (post.metrics.likes || 0) >= likes);
+        }
+    }
+
+    // Filter by min comments
+    if (minComments) {
+        const comments = parseInt(minComments, 10);
+        if (!isNaN(comments)) {
+            results = results.filter(post => (post.metrics.comments || 0) >= comments);
+        }
+    }
     
     // Sort results
     results.sort((a, b) => {
@@ -101,7 +119,7 @@ export default function Home() {
     });
 
     setFilteredResults(results);
-  }, [allResults, timeRange, mediaType, sortBy]);
+  }, [allResults, timeRange, mediaType, sortBy, minLikes, minComments]);
 
 
   return (
@@ -181,6 +199,26 @@ export default function Home() {
                                 <SelectItem value="CAROUSEL_ALBUM">Carousel</SelectItem>
                             </SelectContent>
                         </Select>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Heart className="h-4 w-4 text-muted-foreground" />
+                        <Input
+                            type="number"
+                            placeholder="Min likes"
+                            className="w-[120px] h-9"
+                            value={minLikes}
+                            onChange={(e) => setMinLikes(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <MessageCircle className="h-4 w-4 text-muted-foreground" />
+                        <Input
+                            type="number"
+                            placeholder="Min comments"
+                            className="w-[120px] h-9"
+                            value={minComments}
+                            onChange={(e) => setMinComments(e.target.value)}
+                        />
                     </div>
                      <Separator orientation="vertical" className="h-6 mx-2 hidden sm:block" />
                      <div className="flex items-center gap-2">
