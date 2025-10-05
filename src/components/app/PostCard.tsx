@@ -127,8 +127,8 @@ export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 
   const ScoreIcon = activeTab === 'trending' ? TrendingUp : Award;
 
   const scoreDescription = activeTab === 'trending' 
-    ? 'Based on recent engagement velocity (likes & comments over time). Higher scores mean the post is gaining popularity quickly. Scores above 350 are considered Viral.'
-    : 'Based on total engagement (likes & comments). Higher scores indicate strong overall performance. Scores above 350 are considered Viral.';
+    ? "Based on recent engagement velocity (likes & comments over time). Higher scores mean the post is gaining popularity quickly. Scores above 350 are considered Viral."
+    : "Based on total engagement (likes & comments). Higher scores indicate strong overall performance. Scores above 350 are considered Viral.";
 
 
   return (
@@ -139,7 +139,7 @@ export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 
             <Image src={post.thumbnailUrl} alt={post.caption} fill className="object-cover" />
             <div className="absolute top-2 right-2 flex flex-col items-end gap-2">
               <MediaTypeIndicator type={post.mediaType} />
-              {post.metrics.topScore && <PerformanceBadge score={post.metrics.topScore} />}
+              {score !== undefined && <PerformanceBadge score={score} />}
             </div>
         </div>
       )}
