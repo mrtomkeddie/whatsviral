@@ -43,66 +43,66 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarHeader>
           <Logo />
         </SidebarHeader>
-        <SidebarContent className="p-2">
+        <SidebarContent className="p-4">
           <SidebarMenu>
             <SidebarMenuItem>
               <Link href="/">
                 <SidebarMenuButton asChild isActive={pathname === '/'} tooltip="Hashtag Search">
-                  <span>
+                  <>
                     <LayoutGrid />
-                    Hashtag Search
-                  </span>
+                    <span>Hashtag Search</span>
+                  </>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
                <Link href="/analytics">
                 <SidebarMenuButton asChild isActive={pathname === '/analytics'} tooltip="Public Analytics">
-                  <span>
+                  <>
                     <Send />
-                    Public Analytics
-                  </span>
+                    <span>Public Analytics</span>
+                  </>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
              <SidebarMenuItem>
                <Link href="/me">
                 <SidebarMenuButton asChild isActive={pathname === '/me'} tooltip="My Analytics">
-                  <span>
+                  <>
                     <BarChart3 />
-                    My Analytics
-                  </span>
+                    <span>My Analytics</span>
+                  </>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <Link href="/saved">
                 <SidebarMenuButton asChild isActive={pathname === '/saved'} tooltip="Saved Items">
-                  <span>
+                  <>
                     <Bookmark />
-                    Saved Items
-                  </span>
+                    <span>Saved Items</span>
+                  </>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
                <Link href="/alerts">
                 <SidebarMenuButton asChild isActive={pathname === '/alerts'} tooltip="Alerts">
-                  <span>
+                  <>
                     <Wallet />
-                    Alerts
-                  </span>
+                    <span>Alerts</span>
+                  </>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
-          <SidebarMenu className="p-2">
+          <SidebarMenu className="p-4">
              <SidebarMenuItem>
               <SidebarMenuButton href="#" tooltip="Settings">
                 <Settings />
-                Settings
+                <span>Settings</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
