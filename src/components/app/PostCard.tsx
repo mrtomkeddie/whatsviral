@@ -4,7 +4,6 @@
 import type { InstagramPost } from '@/lib/types';
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -26,7 +25,6 @@ import {
   Video,
   Layers,
   Award,
-  Plus,
 } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 import Image from 'next/image';
@@ -99,16 +97,13 @@ function MediaTypeIndicator({ type }: { type: InstagramPost['mediaType']}) {
 }
 
 function PerformanceBadge({ score }: { score: number }) {
-  let variant: 'default' | 'secondary' | 'destructive' = 'secondary';
   let text = 'Normal';
   let className = '';
 
   if (score >= 350) {
-    variant = 'default';
     text = 'Viral';
     className = 'bg-green-500/20 text-green-400 border-green-500/30';
   } else if (score >= 150) {
-    variant = 'secondary';
     text = 'Rising';
     className = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
   } else {
@@ -123,7 +118,7 @@ function PerformanceBadge({ score }: { score: number }) {
 }
 
 export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 'trending' | 'top' }) {
-  const { savedPosts, addSavedPost, removeSavedPost } = useSavedPosts();
+  const { savedPosts } = useSavedPosts();
   const [isSaveDialogOpen, setSaveDialogOpen] = React.useState(false);
   const isSaved = savedPosts.some(p => p.id === post.id);
 
@@ -132,8 +127,8 @@ export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 
   const ScoreIcon = activeTab === 'trending' ? TrendingUp : Award;
 
   const scoreDescription = activeTab === 'trending' 
-    ? 'Based on recent engagement velocity (likes & comments over time). Higher scores mean the post is gaining popularity quickly.'
-    : 'Based on total engagement (likes & comments). Higher scores indicate strong overall performance.';
+    ? 'Based on recent engagement velocity (likes & comments over time). Higher scores mean the post is gaining popularity quickly. Scores above 350 are considered Viral.'
+    : 'Based on total engagement (likes & comments). Higher scores indicate strong overall performance. Scores above 350 are considered Viral.';
 
 
   return (
