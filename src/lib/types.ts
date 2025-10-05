@@ -8,6 +8,7 @@ export type InstagramPost = {
   platform: 'instagram';
   caption: string;
   author: string;
+  authorFollowers?: number;
   url: string;
   publishedAt: string;
   metrics: {
@@ -15,6 +16,7 @@ export type InstagramPost = {
     comments?: number;
     trendingScore?: number;
     topScore?: number;
+    engagementRate?: number;
   };
   thumbnailUrl?: string;
   mediaType: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM';

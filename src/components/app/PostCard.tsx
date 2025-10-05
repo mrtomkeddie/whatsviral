@@ -1,4 +1,3 @@
-
 'use client';
 
 import type { InstagramPost } from '@/lib/types';
@@ -26,6 +25,7 @@ import {
   Video,
   Layers,
   Award,
+  Plus,
 } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 import Image from 'next/image';
@@ -33,6 +33,7 @@ import { Button } from '../ui/button';
 import { useSavedPosts } from '@/context/SavedPostsContext';
 import { Badge } from '../ui/badge';
 import React from 'react';
+import { SaveToCollectionDialog } from './SaveToCollectionDialog';
 
 function formatMetric(num?: number): string {
     if (num === undefined) return '0';
@@ -95,17 +96,34 @@ function MediaTypeIndicator({ type }: { type: InstagramPost['mediaType']}) {
   );
 }
 
+function PerformanceBadge({ score }: { score: number }) {
+  let variant: 'default' | 'secondary' | 'destructive' = 'secondary';
+  let text = 'Normal';
+  let className = '';
+
+  if (score >= 350) {
+    variant = 'default';
+    text = 'Viral';
+    className = 'bg-green-500/20 text-green-400 border-green-500/30';
+  } else if (score >= 150) {
+    variant = 'secondary';
+    text = 'Rising';
+    className = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+  } else {
+     className = 'bg-muted text-muted-foreground border-border';
+  }
+
+  return (
+    <Badge variant="outline" className={cn('font-semibold', className)}>
+      {text}
+    </Badge>
+  )
+}
+
 export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 'trending' | 'top' }) {
   const { savedPosts, addSavedPost, removeSavedPost } = useSavedPosts();
+  const [isSaveDialogOpen, setSaveDialogOpen] = React.useState(false);
   const isSaved = savedPosts.some(p => p.id === post.id);
-
-  const handleSaveClick = () => {
-    if (isSaved) {
-      removeSavedPost(post.id);
-    } else {
-      addSavedPost(post);
-    }
-  };
 
   const score = activeTab === 'trending' ? post.metrics.trendingScore : post.metrics.topScore;
   const scoreLabel = activeTab === 'trending' ? 'Trending Score' : 'Top Score';
@@ -113,12 +131,14 @@ export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 
 
 
   return (
+    <>
     <Card className="flex flex-col overflow-hidden transition-all hover:shadow-xl hover:-translate-y-1">
       {post.thumbnailUrl && (
         <div className="aspect-square relative">
             <Image src={post.thumbnailUrl} alt={post.caption} fill className="object-cover" />
-            <div className="absolute top-2 right-2">
+            <div className="absolute top-2 right-2 flex flex-col items-end gap-2">
               <MediaTypeIndicator type={post.mediaType} />
+              {post.metrics.topScore && <PerformanceBadge score={post.metrics.topScore} />}
             </div>
         </div>
       )}
@@ -175,13 +195,19 @@ export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 
           )}
         </div>
         <div className="w-full border-t pt-3 flex">
-            <Button variant={isSaved ? "secondary" : "ghost"} size="sm" className="flex-1 justify-center" onClick={handleSaveClick}>
+            <Button variant={isSaved ? "secondary" : "ghost"} size="sm" className="flex-1 justify-center" onClick={() => setSaveDialogOpen(true)}>
                 {isSaved ? <BookmarkCheck className="mr-2"/> : <Save className="mr-2"/>}
                 {isSaved ? "Saved" : "Save"}
             </Button>
         </div>
       </CardFooter>
     </Card>
+    <SaveToCollectionDialog 
+        isOpen={isSaveDialogOpen}
+        onOpenChange={setSaveDialogOpen}
+        post={post}
+    />
+    </>
   );
 }
 
@@ -216,5 +242,3 @@ PostCard.Skeleton = function PostCardSkeleton() {
         </Card>
     )
 }
-
-    

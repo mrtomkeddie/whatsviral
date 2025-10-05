@@ -7,6 +7,7 @@ export const demoInstagramPosts: InstagramPost[] = [
     platform: 'instagram',
     caption: 'Exploring the beautiful mountains of Switzerland! #travel #nature #adventure',
     author: '@swiss.explorer',
+    authorFollowers: 25000,
     url: 'https://www.instagram.com',
     publishedAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
     metrics: {
@@ -21,6 +22,7 @@ export const demoInstagramPosts: InstagramPost[] = [
     platform: 'instagram',
     caption: 'Unboxing a classic. The sound of nostalgia!',
     author: '@console.classics',
+    authorFollowers: 150000,
     url: 'https://www.instagram.com',
     publishedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
     metrics: {
@@ -35,6 +37,7 @@ export const demoInstagramPosts: InstagramPost[] = [
     platform: 'instagram',
     caption: 'My cozy desk setup for a productive week. #wfh #desksetup #productivity',
     author: '@codeandcoffee',
+    authorFollowers: 80000,
     url: 'https://www.instagram.com',
     publishedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
     metrics: {
@@ -49,6 +52,7 @@ thumbnailUrl: 'https://picsum.photos/seed/ig3/480/480',
     platform: 'instagram',
     caption: 'A quick tutorial on how to make the perfect latte art. ☕️ #latteart #coffee #tutorial',
     author: '@barista.daily',
+    authorFollowers: 50000,
     url: 'https://www.instagram.com',
     publishedAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
     metrics: {

@@ -36,9 +36,13 @@ const searchContentFlow = ai.defineFlow(
       const likes = post.metrics.likes || 0;
       const comments = post.metrics.comments || 0;
       const ageHours = Math.max(1, (new Date().getTime() - new Date(post.publishedAt).getTime()) / (1000 * 60 * 60));
+      const authorFollowers = post.authorFollowers || 10000; // Assume 10k followers if not provided
 
       const topScore = likes + (2 * comments);
       const trendingScore = topScore / ageHours;
+
+      // Calculate engagement rate relative to author's followers
+      const engagementRate = authorFollowers > 0 ? ((likes + comments) / authorFollowers) * 100 : 0;
 
       return {
         ...post,
@@ -46,6 +50,7 @@ const searchContentFlow = ai.defineFlow(
           ...post.metrics,
           trendingScore: parseFloat(trendingScore.toFixed(1)),
           topScore: parseFloat(topScore.toFixed(1)),
+          engagementRate: parseFloat(engagementRate.toFixed(2)),
         }
       };
     });

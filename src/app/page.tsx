@@ -5,7 +5,7 @@ import * as React from "react";
 import { AppLayout } from "@/components/app/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Instagram, Loader2, Image as ImageIcon, Video, Layers, Calendar, ArrowDownUp, Heart, MessageCircle, Clock } from "lucide-react";
+import { Search, Instagram, Loader2, Image as ImageIcon, Video, Layers, Calendar, ArrowDownUp, Heart, MessageCircle, Clock, Percent } from "lucide-react";
 import { PostCard } from "@/components/app/PostCard";
 import { searchInstagramContent } from "@/ai/flows/search-flow";
 import type { InstagramPost } from "@/lib/types";
@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 
 type TimeRange = "all" | "24h" | "7d" | "30d";
 type MediaType = "all" | "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM";
-type SortBy = "trending" | "top" | "likes" | "comments" | "newest";
+type SortBy = "trending" | "top" | "likes" | "comments" | "newest" | "engagementRate";
 
 
 export default function Home() {
@@ -113,6 +113,10 @@ export default function Home() {
           return (b.metrics.comments || 0) - (a.metrics.comments || 0);
         case 'newest':
           return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+        case 'engagementRate':
+             const engagementRateA = a.metrics.engagementRate || 0;
+             const engagementRateB = b.metrics.engagementRate || 0;
+             return engagementRateB - engagementRateA;
         default:
           return (b.metrics.trendingScore || 0) - (a.metrics.trendingScore || 0);
       }
@@ -233,6 +237,7 @@ export default function Home() {
                                 ) : (
                                   <SelectItem value="top">Top Posts</SelectItem>
                                 )}
+                                <SelectItem value="engagementRate">Engagement Rate</SelectItem>
                                 <SelectItem value="likes">Most Likes</SelectItem>
                                 <SelectItem value="comments">Most Comments</SelectItem>
                                 <SelectItem value="newest">Newest</SelectItem>
