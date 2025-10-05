@@ -62,14 +62,14 @@ function TimeAgo({ dateString }: { dateString: string }) {
 
 const PostListItem = ({ post }: { post: InstagramPost }) => (
     <Card>
-        <CardContent className="p-4 flex gap-4">
+        <CardContent className="p-4 flex flex-col sm:flex-row gap-4">
             {post.thumbnailUrl && (
-                <div className="relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0">
+                <div className="relative w-full sm:w-32 h-48 sm:h-32 flex-shrink-0">
                     <Image src={post.thumbnailUrl} alt={post.caption.substring(0, 50)} fill className="rounded-md object-cover" />
                 </div>
             )}
             <div className="flex-grow flex flex-col">
-                <p className="text-sm text-muted-foreground line-clamp-3 mb-2">{post.caption}</p>
+                <p className="text-sm text-muted-foreground line-clamp-3 mb-2 flex-grow">{post.caption}</p>
                 <div className="mt-auto space-y-3 pt-2">
                      <div className="flex justify-between items-center text-sm text-muted-foreground">
                         <div className="flex items-center gap-4">
