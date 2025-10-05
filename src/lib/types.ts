@@ -40,8 +40,9 @@ export type RelatedHashtag = {
 };
 
 export type HashtagInsights = {
-  totalPosts: number;
-  avgEngagementRate: number;
+  avgLikes: number;
+  avgComments: number;
+  topFormat: InstagramPost['mediaType'] | 'N/A';
   topRelatedHashtags: RelatedHashtag[];
   topMentionedUsers: Mention[];
 };

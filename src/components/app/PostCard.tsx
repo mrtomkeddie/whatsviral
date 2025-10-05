@@ -126,11 +126,6 @@ export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 
   const scoreLabel = activeTab === 'trending' ? 'Trending Score' : 'Top Score';
   const ScoreIcon = activeTab === 'trending' ? TrendingUp : Award;
 
-  const scoreDescription = activeTab === 'trending' 
-    ? "Based on recent engagement velocity (likes & comments over time). Higher scores mean the post is gaining popularity quickly. Scores above 350 are considered Viral."
-    : "Based on total engagement (likes & comments). Higher scores indicate strong overall performance. Scores above 350 are considered Viral.";
-
-
   return (
     <>
     <Card className="flex flex-col transition-all hover:shadow-xl hover:-translate-y-1">
@@ -189,10 +184,7 @@ export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 
                 </div>
               </TooltipTrigger>
               <TooltipContent>
-                <div className="max-w-xs p-1">
-                  <p className="font-bold text-base mb-1">{scoreLabel}: {score.toFixed(1)}</p>
-                  <p className="text-xs text-muted-foreground">{scoreDescription}</p>
-                </div>
+                <p className="font-bold text-base">{scoreLabel}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

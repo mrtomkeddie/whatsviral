@@ -15,6 +15,7 @@ import {
   type SearchContentOutput,
   type Mention,
   type RelatedHashtag,
+  type InstagramPost,
 } from '@/lib/types';
 import { extractContentMetadata } from './extract-content-metadata';
 
@@ -79,9 +80,18 @@ const searchContentFlow = ai.defineFlow(
     });
 
     // Calculate insights
+    const totalLikes = results.reduce((sum, post) => sum + (post.metrics.likes || 0), 0);
+    const totalComments = results.reduce((sum, post) => sum + (post.metrics.comments || 0), 0);
     const totalPosts = results.length;
-    const totalEngagementRate = results.reduce((sum, post) => sum + (post.metrics.engagementRate || 0), 0);
-    const avgEngagementRate = totalPosts > 0 ? totalEngagementRate / totalPosts : 0;
+    const avgLikes = totalPosts > 0 ? totalLikes / totalPosts : 0;
+    const avgComments = totalPosts > 0 ? totalComments / totalPosts : 0;
+    
+    const formatCounts: Record<string, number> = {};
+    results.forEach(post => {
+        formatCounts[post.mediaType] = (formatCounts[post.mediaType] || 0) + 1;
+    });
+
+    const topFormat = Object.entries(formatCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
 
     const mentionCounts: Record<string, number> = {};
     const hashtagCounts: Record<string, number> = {};
@@ -115,8 +125,9 @@ const searchContentFlow = ai.defineFlow(
     return {
       posts: results,
       insights: {
-        totalPosts: demoInstagramPosts.length, // In a real scenario this would be a larger number from the API
-        avgEngagementRate: parseFloat(avgEngagementRate.toFixed(2)),
+        avgLikes: Math.round(avgLikes),
+        avgComments: Math.round(avgComments),
+        topFormat: topFormat as InstagramPost['mediaType'] | 'N/A',
         topMentionedUsers,
         topRelatedHashtags,
       },

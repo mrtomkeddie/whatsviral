@@ -1,11 +1,11 @@
 
 'use client';
 
-import type { HashtagInsights } from '@/lib/types';
+import type { HashtagInsights as HashtagInsightsType } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AtSign, BarChart2, Hash, Users } from 'lucide-react';
+import { AtSign, Hash, Layers, Heart, MessageCircle } from 'lucide-react';
 import React from 'react';
 
 function formatMetric(num?: number): string {
@@ -15,28 +15,42 @@ function formatMetric(num?: number): string {
     return `${(num / 1000000).toFixed(1)}M`;
 }
 
-export function HashtagInsights({ insights }: { insights: HashtagInsights }) {
+function formatMediaType(type: string) {
+    if (!type) return 'N/A';
+    return type.replace('_', ' ').toLowerCase();
+}
+
+export function HashtagInsights({ insights }: { insights: HashtagInsightsType }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Posts in Sample</CardTitle>
-          <Users className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-sm font-medium">Avg. Likes</CardTitle>
+          <Heart className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{formatMetric(insights.totalPosts)}</div>
+          <div className="text-2xl font-bold">{formatMetric(insights.avgLikes)}</div>
         </CardContent>
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Avg. Engagement Rate</CardTitle>
-          <BarChart2 className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-sm font-medium">Avg. Comments</CardTitle>
+          <MessageCircle className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{insights.avgEngagementRate.toFixed(2)}%</div>
+          <div className="text-2xl font-bold">{formatMetric(insights.avgComments)}</div>
         </CardContent>
       </Card>
       <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Top Format</CardTitle>
+          <Layers className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-xl font-bold capitalize">{formatMediaType(insights.topFormat)}</div>
+        </CardContent>
+      </Card>
+      <Card className="lg:col-span-2">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium flex items-center justify-between">
             <span>Top Related Hashtags</span>
@@ -51,6 +65,7 @@ export function HashtagInsights({ insights }: { insights: HashtagInsights }) {
           </div>
         </CardContent>
       </Card>
+      {/* This card is hidden for now as it makes the grid uneven. Can be added back if layout changes.
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium flex items-center justify-between">
@@ -66,6 +81,7 @@ export function HashtagInsights({ insights }: { insights: HashtagInsights }) {
           </div>
         </CardContent>
       </Card>
+      */}
     </div>
   );
 }
@@ -73,48 +89,18 @@ export function HashtagInsights({ insights }: { insights: HashtagInsights }) {
 
 HashtagInsights.Skeleton = function HashtagInsightsSkeleton() {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <Skeleton className="h-4 w-3/5" />
-                    <Skeleton className="h-4 w-4" />
-                </CardHeader>
-                <CardContent>
-                    <Skeleton className="h-8 w-2/5" />
-                </CardContent>
-            </Card>
-             <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <Skeleton className="h-4 w-3/5" />
-                    <Skeleton className="h-4 w-4" />
-                </CardHeader>
-                <CardContent>
-                    <Skeleton className="h-8 w-2/5" />
-                </CardContent>
-            </Card>
-             <Card>
-                <CardHeader className="pb-2">
-                     <Skeleton className="h-4 w-4/5" />
-                </CardHeader>
-                <CardContent>
-                   <div className="flex flex-wrap gap-2">
-                    <Skeleton className="h-5 w-16" />
-                    <Skeleton className="h-5 w-20" />
-                    <Skeleton className="h-5 w-14" />
-                   </div>
-                </CardContent>
-            </Card>
-             <Card>
-                <CardHeader className="pb-2">
-                     <Skeleton className="h-4 w-4/5" />
-                </CardHeader>
-                <CardContent>
-                   <div className="flex flex-wrap gap-2">
-                    <Skeleton className="h-5 w-16" />
-                    <Skeleton className="h-5 w-20" />
-                   </div>
-                </CardContent>
-            </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+            {[...Array(5)].map((_, i) => (
+                 <Card key={i}>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <Skeleton className="h-4 w-3/5" />
+                        <Skeleton className="h-4 w-4" />
+                    </CardHeader>
+                    <CardContent>
+                        <Skeleton className="h-8 w-2/5" />
+                    </CardContent>
+                </Card>
+            ))}
         </div>
     )
 }
