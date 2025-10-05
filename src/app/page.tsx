@@ -50,9 +50,9 @@ const ScoreGuide = () => (
         </p>
       </div>
        <div className="md:col-span-2">
-         <p className="text-muted-foreground text-xs text-center">
+         <div className="text-muted-foreground text-xs text-center">
             Performance badges are based on these scores: <Badge variant="outline" className="mx-1 bg-green-500/20 text-green-400 border-green-500/30">Viral (350+)</Badge> <Badge variant="outline" className="mx-1 bg-amber-500/20 text-amber-400 border-amber-500/30">Rising (150-349)</Badge> <Badge variant="outline" className="mx-1 bg-muted text-muted-foreground border-border">Normal (&lt;150)</Badge>
-        </p>
+        </div>
       </div>
     </CardContent>
   </Card>
@@ -371,5 +371,3 @@ export default function Home() {
     return null;
   }
 }
-
-    
