@@ -38,9 +38,9 @@ const ScoreGuide = ({ activeTab }: { activeTab: 'trending' | 'top' }) => (
                 <TrendingUp className="h-5 w-5 text-primary" />
                 <span>Trending Score (1-10)</span>
               </div>
-              <p className="text-muted-foreground mb-3">
+              <div className="text-muted-foreground mb-3">
                 Measures recent engagement velocity. A high score means the post is gaining traction quickly right now. Posts with a score of 8+ are marked as <Badge variant="outline" className="text-xs bg-green-500/20 text-green-400 border-green-500/30">Viral</Badge>.
-              </p>
+              </div>
             </div>
           )}
           {activeTab === 'top' && (
@@ -49,9 +49,9 @@ const ScoreGuide = ({ activeTab }: { activeTab: 'trending' | 'top' }) => (
                 <Award className="h-5 w-5 text-primary" />
                 <span>Top Score (1-10)</span>
               </div>
-              <p className="text-muted-foreground mb-3">
+              <div className="text-muted-foreground mb-3">
                 Measures total overall engagement. A high score indicates strong all-time performance relative to other posts. Posts with a score of 8+ are marked as <Badge variant="outline" className="text-xs bg-green-500/20 text-green-400 border-green-500/30">Viral</Badge>.
-              </p>
+              </div>
             </div>
           )}
         </div>
@@ -373,3 +373,5 @@ export default function Home() {
     return null;
   }
 }
+
+    
