@@ -23,7 +23,11 @@ import {
   HelpCircle,
   Search,
   Bookmark,
-  LineChart
+  LineChart,
+  LayoutGrid,
+  Send,
+  BarChart3,
+  Wallet
 } from "lucide-react";
 import { Logo } from "@/components/icons/Logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -35,7 +39,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar variant="floating" collapsible="icon">
+      <Sidebar collapsible="icon">
         <SidebarHeader>
           <Logo />
         </SidebarHeader>
@@ -45,7 +49,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               <Link href="/">
                 <SidebarMenuButton asChild isActive={pathname === '/'} tooltip="Hashtag Search">
                   <span>
-                    <Search />
+                    <LayoutGrid />
                     Hashtag Search
                   </span>
                 </SidebarMenuButton>
@@ -55,7 +59,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                <Link href="/analytics">
                 <SidebarMenuButton asChild isActive={pathname === '/analytics'} tooltip="Public Analytics">
                   <span>
-                    <User />
+                    <Send />
                     Public Analytics
                   </span>
                 </SidebarMenuButton>
@@ -65,7 +69,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                <Link href="/me">
                 <SidebarMenuButton asChild isActive={pathname === '/me'} tooltip="My Analytics">
                   <span>
-                    <LineChart />
+                    <BarChart3 />
                     My Analytics
                   </span>
                 </SidebarMenuButton>
@@ -85,7 +89,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                <Link href="/alerts">
                 <SidebarMenuButton asChild isActive={pathname === '/alerts'} tooltip="Alerts">
                   <span>
-                    <Bell />
+                    <Wallet />
                     Alerts
                   </span>
                 </SidebarMenuButton>
@@ -93,7 +97,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
-        <SidebarFooter className="border-t border-sidebar-border">
+        <SidebarFooter>
           <SidebarMenu className="p-2">
             <SidebarMenuItem>
               <SidebarMenuButton href="#" tooltip="Support">
@@ -108,16 +112,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-          <Separator />
-          <div className="flex items-center gap-3 p-4">
-            <Avatar>
-              <AvatarImage src="https://picsum.photos/seed/user/40/40" data-ai-hint="person" />
-              <AvatarFallback>GU</AvatarFallback>
-            </Avatar>
-            <div className="flex-1 overflow-hidden">
-              <p className="truncate font-semibold text-sm">Guest User</p>
-            </div>
-          </div>
         </SidebarFooter>
       </Sidebar>
       <div className="flex flex-col flex-1 min-w-0">{children}</div>
