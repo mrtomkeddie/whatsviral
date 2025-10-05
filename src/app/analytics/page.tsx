@@ -171,6 +171,7 @@ export default function AnalyticsPage() {
                         </CardHeader>
                         <CardContent>
                           <div className="text-2xl font-bold">{formatMetric(profile.followers)}</div>
+                           <p className="text-xs text-muted-foreground">(requires auth)</p>
                         </CardContent>
                       </Card>
                       <Card>
@@ -180,6 +181,7 @@ export default function AnalyticsPage() {
                         </CardHeader>
                         <CardContent>
                           <div className="text-2xl font-bold">{formatMetric(profile.following)}</div>
+                           <p className="text-xs text-muted-foreground">(requires auth)</p>
                         </CardContent>
                       </Card>
                        <Card>
@@ -189,6 +191,7 @@ export default function AnalyticsPage() {
                         </CardHeader>
                         <CardContent>
                           <div className="text-2xl font-bold">{profile.engagementRate.toFixed(2)}%</div>
+                           <p className="text-xs text-muted-foreground">(requires auth)</p>
                         </CardContent>
                       </Card>
                        <Card>
