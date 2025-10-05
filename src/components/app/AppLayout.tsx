@@ -39,7 +39,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar collapsible="icon">
+      <Sidebar collapsible="icon" variant="floating" defaultOpen={false}>
         <SidebarHeader>
           <Logo />
         </SidebarHeader>
@@ -99,17 +99,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </SidebarContent>
         <SidebarFooter>
           <SidebarMenu className="p-2">
-            <SidebarMenuItem>
-              <SidebarMenuButton href="#" tooltip="Support">
-                <HelpCircle />
-                Support
-              </SidebarMenuButton>
-            </SidebarMenuItem>
              <SidebarMenuItem>
               <SidebarMenuButton href="#" tooltip="Settings">
                 <Settings />
                 Settings
               </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Avatar className="h-9 w-9">
+                  <AvatarFallback>N</AvatarFallback>
+              </Avatar>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
