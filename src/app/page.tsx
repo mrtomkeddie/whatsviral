@@ -39,7 +39,7 @@ const ScoreGuide = ({ activeTab }: { activeTab: 'trending' | 'top' }) => (
                 <span>Trending Score (1-10)</span>
               </div>
               <p className="text-muted-foreground mb-3">
-                Measures recent engagement velocity. A high score means the post is gaining traction quickly right now.
+                Measures recent engagement velocity. A high score means the post is gaining traction quickly right now. Posts with a score of 8+ are marked as <Badge variant="outline" className="text-xs bg-green-500/20 text-green-400 border-green-500/30">Viral</Badge>.
               </p>
             </div>
           )}
@@ -50,18 +50,10 @@ const ScoreGuide = ({ activeTab }: { activeTab: 'trending' | 'top' }) => (
                 <span>Top Score (1-10)</span>
               </div>
               <p className="text-muted-foreground mb-3">
-                Measures total overall engagement. A high score indicates strong all-time performance relative to other posts with this hashtag.
+                Measures total overall engagement. A high score indicates strong all-time performance relative to other posts. Posts with a score of 8+ are marked as <Badge variant="outline" className="text-xs bg-green-500/20 text-green-400 border-green-500/30">Viral</Badge>.
               </p>
             </div>
           )}
-          <div className={activeTab === 'trending' ? 'md:col-start-2' : ''}>
-            <div className="text-muted-foreground text-xs text-center md:text-left border-l-2 border-primary/20 pl-4 py-2">
-              Performance badges are based on a 1-10 scale: <br />
-              <Badge variant="outline" className="my-1 bg-green-500/20 text-green-400 border-green-500/30">Viral (8+)</Badge> <br />
-              <Badge variant="outline" className="my-1 bg-amber-500/20 text-amber-400 border-amber-500/30">Rising (5-7.9)</Badge> <br />
-              <Badge variant="outline" className="my-1 bg-muted text-muted-foreground border-border">Normal (&lt;5)</Badge>
-            </div>
-          </div>
         </div>
       </CardContent>
     </Card>
