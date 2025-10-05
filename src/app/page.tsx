@@ -24,17 +24,17 @@ const POSTS_PER_PAGE = 8;
 
 const ScoreGuide = ({ activeTab }: { activeTab: 'trending' | 'top' }) => (
     <Card className="mt-8 bg-accent/50">
-      <CardHeader className="pb-4">
+      <CardHeader className="pb-4 items-center">
         <CardTitle className="text-lg flex items-center gap-2">
           <Info className="h-5 w-5" />
           Understanding Scores
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+      <CardContent className="text-center">
+        <div className="text-sm max-w-md mx-auto">
           {activeTab === 'trending' && (
             <div>
-              <div className="flex items-center gap-2 font-semibold mb-2">
+              <div className="flex items-center justify-center gap-2 font-semibold mb-2">
                 <TrendingUp className="h-5 w-5 text-primary" />
                 <span>Trending Score (1-10)</span>
               </div>
@@ -45,7 +45,7 @@ const ScoreGuide = ({ activeTab }: { activeTab: 'trending' | 'top' }) => (
           )}
           {activeTab === 'top' && (
             <div>
-              <div className="flex items-center gap-2 font-semibold mb-2">
+              <div className="flex items-center justify-center gap-2 font-semibold mb-2">
                 <Award className="h-5 w-5 text-primary" />
                 <span>Top Score (1-10)</span>
               </div>
