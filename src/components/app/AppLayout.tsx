@@ -22,7 +22,8 @@ import {
   Settings,
   HelpCircle,
   Search,
-  Bookmark
+  Bookmark,
+  LineChart
 } from "lucide-react";
 import { Logo } from "@/components/icons/Logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -34,7 +35,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar variant="inset" collapsible="icon">
+      <Sidebar variant="inset" collapsible="icon" className="border-r border-sidebar-border">
         <SidebarHeader>
           <Logo />
         </SidebarHeader>
@@ -52,10 +53,20 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </SidebarMenuItem>
             <SidebarMenuItem>
                <Link href="/analytics">
-                <SidebarMenuButton asChild isActive={pathname === '/analytics'} tooltip="User Analytics">
+                <SidebarMenuButton asChild isActive={pathname === '/analytics'} tooltip="Public Analytics">
                   <span>
                     <User />
-                    User Analytics
+                    Public Analytics
+                  </span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+               <Link href="/me">
+                <SidebarMenuButton asChild isActive={pathname === '/me'} tooltip="My Analytics">
+                  <span>
+                    <LineChart />
+                    My Analytics
                   </span>
                 </SidebarMenuButton>
               </Link>
