@@ -15,15 +15,8 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import {
-  Home,
-  Save,
-  Bell,
-  User,
   Settings,
-  HelpCircle,
-  Search,
   Bookmark,
-  LineChart,
   LayoutGrid,
   Send,
   BarChart3,
@@ -31,8 +24,6 @@ import {
 } from "lucide-react";
 import { Logo } from "@/components/icons/Logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -46,7 +37,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarContent className="p-4">
           <SidebarMenu>
             <SidebarMenuItem>
-              <Link href="/">
+              <Link href="/" passHref>
                 <SidebarMenuButton asChild isActive={pathname === '/'} tooltip="Hashtag Search">
                   <>
                     <LayoutGrid />
@@ -56,7 +47,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
-               <Link href="/analytics">
+               <Link href="/analytics" passHref>
                 <SidebarMenuButton asChild isActive={pathname === '/analytics'} tooltip="Public Analytics">
                   <>
                     <Send />
@@ -66,7 +57,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </Link>
             </SidebarMenuItem>
              <SidebarMenuItem>
-               <Link href="/me">
+               <Link href="/me" passHref>
                 <SidebarMenuButton asChild isActive={pathname === '/me'} tooltip="My Analytics">
                   <>
                     <BarChart3 />
@@ -76,7 +67,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <Link href="/saved">
+              <Link href="/saved" passHref>
                 <SidebarMenuButton asChild isActive={pathname === '/saved'} tooltip="Saved Items">
                   <>
                     <Bookmark />
@@ -86,7 +77,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
-               <Link href="/alerts">
+               <Link href="/alerts" passHref>
                 <SidebarMenuButton asChild isActive={pathname === '/alerts'} tooltip="Alerts">
                   <>
                     <Wallet />
