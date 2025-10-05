@@ -35,7 +35,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar variant="inset" collapsible="icon" className="border-r border-sidebar-border">
+      <Sidebar variant="floating" collapsible="icon">
         <SidebarHeader>
           <Logo />
         </SidebarHeader>
