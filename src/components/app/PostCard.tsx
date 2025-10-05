@@ -34,6 +34,7 @@ import { useSavedPosts } from '@/context/SavedPostsContext';
 import { Badge } from '../ui/badge';
 import React from 'react';
 import { SaveToCollectionDialog } from './SaveToCollectionDialog';
+import { cn } from '@/lib/utils';
 
 function formatMetric(num?: number): string {
     if (num === undefined) return '0';
