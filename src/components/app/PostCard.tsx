@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { InstagramPost } from '@/lib/types';
@@ -130,6 +131,10 @@ export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 
   const scoreLabel = activeTab === 'trending' ? 'Trending Score' : 'Top Score';
   const ScoreIcon = activeTab === 'trending' ? TrendingUp : Award;
 
+  const scoreDescription = activeTab === 'trending' 
+    ? 'Based on recent engagement velocity (likes & comments over time). Higher scores mean the post is gaining popularity quickly.'
+    : 'Based on total engagement (likes & comments). Higher scores indicate strong overall performance.';
+
 
   return (
     <>
@@ -189,7 +194,10 @@ export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 
                 </div>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{scoreLabel}: {score.toFixed(1)}</p>
+                <div className="max-w-xs p-1">
+                  <p className="font-bold text-base mb-1">{scoreLabel}: {score.toFixed(1)}</p>
+                  <p className="text-xs text-muted-foreground">{scoreDescription}</p>
+                </div>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
