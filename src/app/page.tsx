@@ -22,40 +22,49 @@ type SortBy = "trending" | "top" | "likes" | "comments" | "newest" | "engagement
 
 const POSTS_PER_PAGE = 8;
 
-const ScoreGuide = () => (
-  <Card className="mt-8 bg-accent/50">
-    <CardHeader className="pb-4">
-      <CardTitle className="text-lg flex items-center gap-2">
-        <Info className="h-5 w-5" />
-        Understanding Scores
-      </CardTitle>
-    </CardHeader>
-    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-      <div>
-        <div className="flex items-center gap-2 font-semibold mb-2">
-          <TrendingUp className="h-5 w-5 text-primary" />
-          <span>Trending Score (1-10)</span>
+const ScoreGuide = ({ activeTab }: { activeTab: 'trending' | 'top' }) => (
+    <Card className="mt-8 bg-accent/50">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-lg flex items-center gap-2">
+          <Info className="h-5 w-5" />
+          Understanding Scores
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+          {activeTab === 'trending' && (
+            <div>
+              <div className="flex items-center gap-2 font-semibold mb-2">
+                <TrendingUp className="h-5 w-5 text-primary" />
+                <span>Trending Score (1-10)</span>
+              </div>
+              <p className="text-muted-foreground mb-3">
+                Measures recent engagement velocity. A high score means the post is gaining traction quickly right now.
+              </p>
+            </div>
+          )}
+          {activeTab === 'top' && (
+            <div>
+              <div className="flex items-center gap-2 font-semibold mb-2">
+                <Award className="h-5 w-5 text-primary" />
+                <span>Top Score (1-10)</span>
+              </div>
+              <p className="text-muted-foreground mb-3">
+                Measures total overall engagement. A high score indicates strong all-time performance relative to other posts with this hashtag.
+              </p>
+            </div>
+          )}
+          <div className={activeTab === 'trending' ? 'md:col-start-2' : ''}>
+            <div className="text-muted-foreground text-xs text-center md:text-left border-l-2 border-primary/20 pl-4 py-2">
+              Performance badges are based on a 1-10 scale: <br />
+              <Badge variant="outline" className="my-1 bg-green-500/20 text-green-400 border-green-500/30">Viral (8+)</Badge> <br />
+              <Badge variant="outline" className="my-1 bg-amber-500/20 text-amber-400 border-amber-500/30">Rising (5-7.9)</Badge> <br />
+              <Badge variant="outline" className="my-1 bg-muted text-muted-foreground border-border">Normal (&lt;5)</Badge>
+            </div>
+          </div>
         </div>
-        <p className="text-muted-foreground mb-3">
-          Measures recent engagement velocity. A high score means the post is gaining traction quickly right now.
-        </p>
-      </div>
-      <div>
-        <div className="flex items-center gap-2 font-semibold mb-2">
-          <Award className="h-5 w-5 text-primary" />
-          <span>Top Score (1-10)</span>
-        </div>
-        <p className="text-muted-foreground mb-3">
-          Measures total overall engagement. A high score indicates strong all-time performance relative to other posts with this hashtag.
-        </p>
-      </div>
-       <div className="md:col-span-2">
-         <div className="text-muted-foreground text-xs text-center">
-            Performance badges are based on a 1-10 scale: <Badge variant="outline" className="mx-1 bg-green-500/20 text-green-400 border-green-500/30">Viral (8+)</Badge> <Badge variant="outline" className="mx-1 bg-amber-500/20 text-amber-400 border-amber-500/30">Rising (5-7.9)</Badge> <Badge variant="outline" className="mx-1 bg-muted text-muted-foreground border-border">Normal (&lt;5)</Badge>
-        </div>
-      </div>
-    </CardContent>
-  </Card>
+      </CardContent>
+    </Card>
 );
 
 
@@ -229,7 +238,7 @@ export default function Home() {
           <div className="mt-12">
             {isLoading && <HashtagInsights.Skeleton />}
             {insights && <HashtagInsights insights={insights} />}
-            {searchPerformed && <ScoreGuide />}
+            {searchPerformed && <ScoreGuide activeTab={activeTab} />}
             <Tabs value={activeTab} onValueChange={onTabChange} className="w-full mt-8">
               <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
                 <TabsTrigger value="trending">Trending</TabsTrigger>
