@@ -38,51 +38,41 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <SidebarMenu>
             <SidebarMenuItem>
               <Link href="/" passHref>
-                <SidebarMenuButton asChild isActive={pathname === '/'} tooltip="Hashtag Search">
-                  <>
-                    <LayoutGrid />
-                    <span>Hashtag Search</span>
-                  </>
+                <SidebarMenuButton isActive={pathname === '/'} tooltip="Hashtag Search">
+                  <LayoutGrid />
+                  <span>Hashtag Search</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
                <Link href="/analytics" passHref>
-                <SidebarMenuButton asChild isActive={pathname === '/analytics'} tooltip="Public Analytics">
-                  <>
-                    <Send />
-                    <span>Public Analytics</span>
-                  </>
+                <SidebarMenuButton isActive={pathname === '/analytics'} tooltip="Public Analytics">
+                  <Send />
+                  <span>Public Analytics</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
              <SidebarMenuItem>
                <Link href="/me" passHref>
-                <SidebarMenuButton asChild isActive={pathname === '/me'} tooltip="My Analytics">
-                  <>
-                    <BarChart3 />
-                    <span>My Analytics</span>
-                  </>
+                <SidebarMenuButton isActive={pathname === '/me'} tooltip="My Analytics">
+                  <BarChart3 />
+                  <span>My Analytics</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <Link href="/saved" passHref>
-                <SidebarMenuButton asChild isActive={pathname === '/saved'} tooltip="Saved Items">
-                  <>
-                    <Bookmark />
-                    <span>Saved Items</span>
-                  </>
+                <SidebarMenuButton isActive={pathname === '/saved'} tooltip="Saved Items">
+                  <Bookmark />
+                  <span>Saved Items</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
                <Link href="/alerts" passHref>
-                <SidebarMenuButton asChild isActive={pathname === '/alerts'} tooltip="Alerts">
-                  <>
-                    <Wallet />
-                    <span>Alerts</span>
-                  </>
+                <SidebarMenuButton isActive={pathname === '/alerts'} tooltip="Alerts">
+                  <Wallet />
+                  <span>Alerts</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
