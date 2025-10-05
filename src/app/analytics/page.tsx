@@ -5,12 +5,11 @@ import * as React from 'react';
 import { AppLayout } from "@/components/app/AppLayout";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2, Search, UserX, LineChart, MessageCircle, Heart, Users, UserPlus, FileText, AtSign, Clock, TrendingUp, Award, Star } from 'lucide-react';
+import { Loader2, Search, UserX, LineChart, MessageCircle, Heart, Users, UserPlus, FileText, AtSign, Clock, TrendingUp, Award, Star, Instagram } from 'lucide-react';
 import { getUserAnalytics } from '@/ai/flows/user-analytics-flow';
-import type { InstagramUserProfile, HistoryPoint } from '@/lib/types';
+import type { InstagramUserProfile, HistoryPoint, InstagramPost } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 
@@ -59,6 +58,45 @@ function TimeAgo({ dateString }: { dateString: string }) {
 
     return <>{ago}</>;
 }
+
+
+const PostListItem = ({ post }: { post: InstagramPost }) => (
+    <Card>
+        <CardContent className="p-4 flex gap-4">
+            {post.thumbnailUrl && (
+                <div className="relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0">
+                    <Image src={post.thumbnailUrl} alt={post.caption.substring(0, 50)} fill className="rounded-md object-cover" />
+                </div>
+            )}
+            <div className="flex-grow flex flex-col">
+                <p className="text-sm text-muted-foreground line-clamp-3 mb-2">{post.caption}</p>
+                <div className="mt-auto space-y-3 pt-2">
+                     <div className="flex justify-between items-center text-sm text-muted-foreground">
+                        <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-1.5" title="Likes">
+                                <Heart className="w-4 h-4" />
+                                <span className="font-medium">{formatMetric(post.metrics.likes)}</span>
+                            </div>
+                            <div className="flex items-center gap-1.5" title="Comments">
+                                <MessageCircle className="w-4 h-4" />
+                                <span className="font-medium">{formatMetric(post.metrics.comments)}</span>
+                            </div>
+                        </div>
+                        <Badge variant="secondary" className="capitalize">{post.mediaType.replace('_', ' ').toLowerCase()}</Badge>
+                    </div>
+                     <div className="flex justify-between items-center">
+                        <span className="text-xs text-muted-foreground"><TimeAgo dateString={post.publishedAt} /></span>
+                        <Button asChild variant="ghost" size="sm">
+                            <a href={post.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5">
+                                View on Instagram <Instagram className="w-3.5 h-3.5" />
+                            </a>
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        </CardContent>
+    </Card>
+);
 
 export default function AnalyticsPage() {
     const [username, setUsername] = React.useState('');
@@ -186,43 +224,16 @@ export default function AnalyticsPage() {
                     </div>
                     
                     <Card>
-                      <CardHeader>
-                        <CardTitle>Recent Posts</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                          <Table>
-                              <TableHeader>
-                                  <TableRow>
-                                      <TableHead className="w-[100px]">Preview</TableHead>
-                                      <TableHead>Caption</TableHead>
-                                      <TableHead>Type</TableHead>
-                                      <TableHead>Likes</TableHead>
-                                      <TableHead>Comments</TableHead>
-                                      <TableHead>Published</TableHead>
-                                      <TableHead className="text-right">Link</TableHead>
-                                  </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                  {profile.recentPosts.map(post => (
-                                      <TableRow key={post.id}>
-                                          <TableCell>
-                                              {post.thumbnailUrl && <Image src={post.thumbnailUrl} alt={post.caption.substring(0, 30)} width={64} height={64} className="rounded-md object-cover aspect-square" />}
-                                          </TableCell>
-                                          <TableCell className="max-w-xs truncate">{post.caption}</TableCell>
-                                          <TableCell><Badge variant="secondary">{post.mediaType}</Badge></TableCell>
-                                          <TableCell>{formatMetric(post.metrics.likes)}</TableCell>
-                                          <TableCell>{formatMetric(post.metrics.comments)}</TableCell>
-                                          <TableCell><TimeAgo dateString={post.publishedAt} /></TableCell>
-                                          <TableCell className="text-right">
-                                              <Button asChild variant="ghost" size="sm">
-                                                  <a href={post.url} target="_blank" rel="noopener noreferrer">View</a>
-                                              </Button>
-                                          </TableCell>
-                                      </TableRow>
-                                  ))}
-                              </TableBody>
-                          </Table>
-                      </CardContent>
+                        <CardHeader>
+                            <CardTitle>Recent Posts</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-4">
+                                {profile.recentPosts.map(post => (
+                                    <PostListItem key={post.id} post={post} />
+                                ))}
+                            </div>
+                        </CardContent>
                     </Card>
                   </div>
                   <div className="lg:col-span-1 space-y-8">
@@ -292,5 +303,3 @@ export default function AnalyticsPage() {
     </AppLayout>
   );
 }
-
-    
