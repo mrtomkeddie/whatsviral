@@ -13,6 +13,12 @@ import Image from 'next/image';
 import { Line, LineChart as RechartsLineChart, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
 import { Button } from '@/components/ui/button';
+import {
+  Tooltip as UiTooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 
 function formatMetric(num?: number): string {
@@ -185,44 +191,74 @@ export default function MyAnalyticsPage() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   <div className="lg:col-span-2 space-y-8">
+                  <TooltipProvider>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                          <CardTitle className="text-sm font-medium">Followers</CardTitle>
-                          <Users className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                          <div className="text-2xl font-bold">{formatMetric(profile.followers)}</div>
-                        </CardContent>
-                      </Card>
-                      <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                          <CardTitle className="text-sm font-medium">Following</CardTitle>
-                          <UserPlus className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                          <div className="text-2xl font-bold">{formatMetric(profile.following)}</div>
-                        </CardContent>
-                      </Card>
-                       <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                          <CardTitle className="text-sm font-medium">Avg. Engagement</CardTitle>
-                          <LineChart className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                          <div className="text-2xl font-bold">{profile.engagementRate.toFixed(2)}%</div>
-                        </CardContent>
-                      </Card>
-                       <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                          <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
-                          <FileText className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                          <div className="text-2xl font-bold">{formatMetric(profile.postCount)}</div>
-                        </CardContent>
-                      </Card>
+                        <UiTooltip>
+                          <TooltipTrigger asChild>
+                            <Card>
+                              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Followers</CardTitle>
+                                <Users className="h-4 w-4 text-muted-foreground" />
+                              </CardHeader>
+                              <CardContent>
+                                <div className="text-2xl font-bold">{formatMetric(profile.followers)}</div>
+                              </CardContent>
+                            </Card>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Total number of followers.</p>
+                          </TooltipContent>
+                        </UiTooltip>
+                        <UiTooltip>
+                          <TooltipTrigger asChild>
+                            <Card>
+                              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Following</CardTitle>
+                                <UserPlus className="h-4 w-4 text-muted-foreground" />
+                              </CardHeader>
+                              <CardContent>
+                                <div className="text-2xl font-bold">{formatMetric(profile.following)}</div>
+                              </CardContent>
+                            </Card>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                             <p>Total number of accounts you follow.</p>
+                          </TooltipContent>
+                        </UiTooltip>
+                        <UiTooltip>
+                           <TooltipTrigger asChild>
+                            <Card>
+                              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Avg. Engagement</CardTitle>
+                                <LineChart className="h-4 w-4 text-muted-foreground" />
+                              </CardHeader>
+                              <CardContent>
+                                <div className="text-2xl font-bold">{profile.engagementRate.toFixed(2)}%</div>
+                              </CardContent>
+                            </Card>
+                          </TooltipTrigger>
+                           <TooltipContent>
+                             <p>(Likes + Comments) / Followers per post.</p>
+                          </TooltipContent>
+                        </UiTooltip>
+                        <UiTooltip>
+                          <TooltipTrigger asChild>
+                            <Card>
+                              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
+                                <FileText className="h-4 w-4 text-muted-foreground" />
+                              </CardHeader>
+                              <CardContent>
+                                <div className="text-2xl font-bold">{formatMetric(profile.postCount)}</div>
+                              </CardContent>
+                            </Card>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Total number of posts on your account.</p>
+                          </TooltipContent>
+                        </UiTooltip>
                     </div>
+                    </TooltipProvider>
 
                      <Card>
                         <CardHeader>
@@ -262,7 +298,7 @@ export default function MyAnalyticsPage() {
                             <ChartContainer config={engagementChartConfig} className="h-[200px] w-full">
                                 <RechartsLineChart data={profile.engagementHistory} margin={{ left: 12, right: 12 }}>
                                     <CartesianGrid vertical={false} />
-                                    <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => value.slice(0, 3)} />
+                                    <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => `${value}%`} />
                                     <YAxis tickFormatter={(value) => `${value}%`} domain={[0, 'dataMax + 1']} />
                                     <Tooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
                                     <Line dataKey="value" type="monotone" stroke="var(--color-value)" strokeWidth={2} dot={false} />
@@ -334,3 +370,5 @@ export default function MyAnalyticsPage() {
     </AppLayout>
   );
 }
+
+    
