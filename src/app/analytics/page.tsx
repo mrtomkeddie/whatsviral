@@ -89,10 +89,10 @@ export default function AnalyticsPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl sm:text-5xl font-bold font-headline tracking-tight">
-              Public User Analytics
+              Public Analytics
             </h1>
             <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-              Search for any public Instagram username to view their profile stats and recent post performance.
+              Learn from other creators. Search for any public Instagram username to view their profile stats and recent post performance.
             </p>
           </div>
 
@@ -155,7 +155,7 @@ export default function AnalyticsPage() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   <div className="lg:col-span-2 space-y-8">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                       <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                           <CardTitle className="text-sm font-medium">Avg. Likes</CardTitle>
@@ -180,16 +180,7 @@ export default function AnalyticsPage() {
                           <Clock className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                          <div className="text-sm font-bold">{profile.postingFrequency}</div>
-                        </CardContent>
-                      </Card>
-                       <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                          <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
-                          <FileText className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                          <div className="text-2xl font-bold">{formatMetric(profile.postCount)}</div>
+                          <div className="text-sm font-bold pt-2">{profile.postingFrequency}</div>
                         </CardContent>
                       </Card>
                     </div>
@@ -238,6 +229,7 @@ export default function AnalyticsPage() {
                      <Card>
                         <CardHeader>
                             <CardTitle>Top Mentions</CardTitle>
+                             <CardDescription>Collaborators & Mentions</CardDescription>
                         </CardHeader>
                         <CardContent>
                             {profile.topMentions.length > 0 ? (

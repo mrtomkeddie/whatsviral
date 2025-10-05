@@ -3,11 +3,11 @@
 
 import * as React from 'react';
 import { AppLayout } from "@/components/app/AppLayout";
-import { Loader2, LineChart, MessageCircle, Heart, Users, UserPlus, FileText, AtSign } from 'lucide-react';
+import { Loader2, LineChart, MessageCircle, Heart, Users, UserPlus, FileText, AtSign, Star } from 'lucide-react';
 import { getUserAnalytics } from '@/ai/flows/user-analytics-flow';
 import type { InstagramUserProfile } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
@@ -106,10 +106,10 @@ export default function MyAnalyticsPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl sm:text-5xl font-bold font-headline tracking-tight">
-              My Analytics
+              Your Analytics
             </h1>
             <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-              Your personal Instagram performance dashboard.
+              Measure your growth. Your personal Instagram performance dashboard.
             </p>
           </div>
 
@@ -263,6 +263,7 @@ export default function MyAnalyticsPage() {
                      <Card>
                         <CardHeader>
                             <CardTitle>Top Mentions</CardTitle>
+                            <CardDescription>Collaborators & Mentions</CardDescription>
                         </CardHeader>
                         <CardContent>
                             {profile.topMentions.length > 0 ? (
@@ -282,6 +283,37 @@ export default function MyAnalyticsPage() {
                             )}
                         </CardContent>
                     </Card>
+                    {profile.mostEngagedPost && (
+                         <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Star className="text-amber-400" />
+                                    Most Engaged Post
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                {profile.mostEngagedPost.thumbnailUrl && (
+                                     <a href={profile.mostEngagedPost.url} target="_blank" rel="noopener noreferrer">
+                                        <Image src={profile.mostEngagedPost.thumbnailUrl} alt={profile.mostEngagedPost.caption} width={400} height={400} className="rounded-lg object-cover w-full aspect-square" />
+                                     </a>
+                                )}
+                                <p className="text-sm text-muted-foreground line-clamp-2">{profile.mostEngagedPost.caption}</p>
+                                <div className="flex justify-between items-center text-sm">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-1.5 font-medium" title="Likes">
+                                            <Heart className="w-4 h-4 text-red-500" />
+                                            <span>{formatMetric(profile.mostEngagedPost.metrics.likes)}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 font-medium" title="Comments">
+                                            <MessageCircle className="w-4 h-4 text-sky-500" />
+                                            <span>{formatMetric(profile.mostEngagedPost.metrics.comments)}</span>
+                                        </div>
+                                    </div>
+                                    <Badge variant="outline"><TimeAgo dateString={profile.mostEngagedPost.publishedAt} /></Badge>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
                   </div>
                 </div>
               </div>
