@@ -13,6 +13,8 @@ import {
   SearchContentOutputSchema,
   type SearchContentInput,
   type SearchContentOutput,
+  type Mention,
+  type RelatedHashtag,
 } from '@/lib/types';
 
 export async function searchInstagramContent(input: SearchContentInput): Promise<SearchContentOutput> {
@@ -62,8 +64,48 @@ const searchContentFlow = ai.defineFlow(
         return (b.metrics.topScore || 0) - (a.metrics.topScore || 0);
     });
 
+    // Calculate insights
+    const totalPosts = results.length;
+    const totalEngagementRate = results.reduce((sum, post) => sum + (post.metrics.engagementRate || 0), 0);
+    const avgEngagementRate = totalPosts > 0 ? totalEngagementRate / totalPosts : 0;
+
+    const mentionCounts: Record<string, number> = {};
+    const hashtagCounts: Record<string, number> = {};
+    const mentionRegex = /@(\w[\w.]*\w)/g;
+    const hashtagRegex = /#(\w+)/g;
+
+    results.forEach(post => {
+      let match;
+      while ((match = mentionRegex.exec(post.caption)) !== null) {
+        const username = match[1];
+        mentionCounts[username] = (mentionCounts[username] || 0) + 1;
+      }
+      while ((match = hashtagRegex.exec(post.caption)) !== null) {
+        const hashtag = match[1].toLowerCase();
+        if (hashtag !== input.hashtag.replace('#','').toLowerCase()) {
+            hashtagCounts[hashtag] = (hashtagCounts[hashtag] || 0) + 1;
+        }
+      }
+    });
+
+    const topMentionedUsers: Mention[] = Object.entries(mentionCounts)
+      .map(([username, count]) => ({ username, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
+    const topRelatedHashtags: RelatedHashtag[] = Object.entries(hashtagCounts)
+      .map(([hashtag, count]) => ({ hashtag: `#${hashtag}`, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
     return {
       posts: results,
+      insights: {
+        totalPosts: demoInstagramPosts.length, // In a real scenario this would be a larger number from the API
+        avgEngagementRate: parseFloat(avgEngagementRate.toFixed(2)),
+        topMentionedUsers,
+        topRelatedHashtags,
+      },
     };
   }
 );

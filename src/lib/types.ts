@@ -32,6 +32,18 @@ export type Mention = {
   count: number;
 };
 
+export type RelatedHashtag = {
+  hashtag: string;
+  count: number;
+};
+
+export type HashtagInsights = {
+  totalPosts: number;
+  avgEngagementRate: number;
+  topRelatedHashtags: RelatedHashtag[];
+  topMentionedUsers: Mention[];
+};
+
 export type InstagramUserProfile = {
   id: string;
   username: string;
@@ -62,6 +74,7 @@ export type SearchContentInput = z.infer<typeof SearchContentInputSchema>;
 // Schema for searchContent flow output
 export const SearchContentOutputSchema = z.object({
   posts: z.array(z.custom<InstagramPost>()),
+  insights: z.custom<HashtagInsights>().optional(),
 });
 export type SearchContentOutput = z.infer<typeof SearchContentOutputSchema>;
 

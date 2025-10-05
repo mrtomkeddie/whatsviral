@@ -8,10 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Search, Instagram, Loader2, Image as ImageIcon, Video, Layers, Calendar, ArrowDownUp, Heart, MessageCircle, Clock, Percent } from "lucide-react";
 import { PostCard } from "@/components/app/PostCard";
 import { searchInstagramContent } from "@/ai/flows/search-flow";
-import type { InstagramPost } from "@/lib/types";
+import type { InstagramPost, HashtagInsights as HashtagInsightsType } from "@/lib/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { HashtagInsights } from "@/components/app/HashtagInsights";
 
 type TimeRange = "all" | "24h" | "7d" | "30d";
 type MediaType = "all" | "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM";
@@ -22,6 +23,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [allResults, setAllResults] = React.useState<InstagramPost[]>([]);
   const [filteredResults, setFilteredResults] = React.useState<InstagramPost[]>([]);
+  const [insights, setInsights] = React.useState<HashtagInsightsType | null>(null);
   const [searchPerformed, setSearchPerformed] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [activeTab, setActiveTab] = React.useState<"trending" | "top">("trending");
@@ -37,6 +39,7 @@ export default function Home() {
     setSearchPerformed(true);
     setIsLoading(true);
     setAllResults([]);
+    setInsights(null);
     
     try {
       const response = await searchInstagramContent({
@@ -44,6 +47,9 @@ export default function Home() {
         mode: mode,
       });
       setAllResults(response.posts);
+      if (response.insights) {
+        setInsights(response.insights);
+      }
     } catch (error) {
       console.error("Failed to fetch content:", error);
     } finally {
@@ -168,6 +174,8 @@ export default function Home() {
           </div>
 
           <div className="mt-12">
+            {isLoading && <HashtagInsights.Skeleton />}
+            {insights && <HashtagInsights insights={insights} />}
             <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
               <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
                 <TabsTrigger value="trending">Trending</TabsTrigger>
