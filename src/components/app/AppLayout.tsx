@@ -34,7 +34,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarHeader>
           <Logo />
         </SidebarHeader>
-        <SidebarContent className="p-4 justify-center">
+        <SidebarContent className="p-4">
           <SidebarMenu className="items-center">
             <SidebarMenuItem>
               <Link href="/" passHref>
