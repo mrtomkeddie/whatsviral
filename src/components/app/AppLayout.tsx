@@ -34,8 +34,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarHeader>
           <Logo />
         </SidebarHeader>
-        <SidebarContent className="p-4">
-          <SidebarMenu>
+        <SidebarContent className="p-4 justify-center">
+          <SidebarMenu className="items-center">
             <SidebarMenuItem>
               <Link href="/" passHref>
                 <SidebarMenuButton isActive={pathname === '/'} tooltip="Hashtag Search">
@@ -79,7 +79,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
-          <SidebarMenu className="p-4">
+          <SidebarMenu className="p-4 items-center">
              <SidebarMenuItem>
               <SidebarMenuButton href="#" tooltip="Settings">
                 <Settings />
