@@ -32,6 +32,7 @@ import Image from 'next/image';
 import { Button } from '../ui/button';
 import { useSavedPosts } from '@/context/SavedPostsContext';
 import { Badge } from '../ui/badge';
+import React from 'react';
 
 function formatMetric(num?: number): string {
     if (num === undefined) return '0';
@@ -40,27 +41,43 @@ function formatMetric(num?: number): string {
     return `${(num / 1000000).toFixed(1)}M`;
 }
 
-function timeAgo(dateString: string): string {
-    const date = new Date(dateString);
-    const now = new Date();
-    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-  
-    let interval = seconds / 31536000;
-    if (interval > 1) return `${Math.floor(interval)}y`;
-  
-    interval = seconds / 2592000;
-    if (interval > 1) return `${Math.floor(interval)}mo`;
-  
-    interval = seconds / 86400;
-    if (interval > 1) return `${Math.floor(interval)}d`;
-  
-    interval = seconds / 3600;
-    if (interval > 1) return `${Math.floor(interval)}h`;
-  
-    interval = seconds / 60;
-    if (interval > 1) return `${Math.floor(interval)}m`;
-  
-    return `${Math.floor(seconds)}s`;
+function TimeAgo({ dateString }: { dateString: string }) {
+    const [ago, setAgo] = React.useState('');
+
+    React.useEffect(() => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+        let interval = seconds / 31536000;
+        if (interval > 1) {
+            setAgo(`${Math.floor(interval)}y ago`);
+            return;
+        }
+        interval = seconds / 2592000;
+        if (interval > 1) {
+            setAgo(`${Math.floor(interval)}mo ago`);
+            return;
+        }
+        interval = seconds / 86400;
+        if (interval > 1) {
+            setAgo(`${Math.floor(interval)}d ago`);
+            return;
+        }
+        interval = seconds / 3600;
+        if (interval > 1) {
+            setAgo(`${Math.floor(interval)}h ago`);
+            return;
+        }
+        interval = seconds / 60;
+        if (interval > 1) {
+            setAgo(`${Math.floor(interval)}m ago`);
+            return;
+        }
+        setAgo(`${Math.floor(seconds)}s ago`);
+    }, [dateString]);
+
+    return <>{ago}</>;
 }
 
 function MediaTypeIndicator({ type }: { type: InstagramPost['mediaType']}) {
@@ -115,7 +132,7 @@ export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 
               @{post.author}
             </CardDescription>
           </a>
-          <span className="text-xs text-muted-foreground">{timeAgo(post.publishedAt)} ago</span>
+          <span className="text-xs text-muted-foreground"><TimeAgo dateString={post.publishedAt} /></span>
         </div>
         <CardDescription className="text-sm line-clamp-3 h-[3.75rem]">
           <a href={post.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
@@ -199,3 +216,5 @@ PostCard.Skeleton = function PostCardSkeleton() {
         </Card>
     )
 }
+
+    

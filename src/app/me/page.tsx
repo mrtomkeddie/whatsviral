@@ -23,27 +23,43 @@ function formatMetric(num?: number): string {
     return `${(num / 1000000).toFixed(1)}M`;
 }
 
-function timeAgo(dateString: string): string {
-    const date = new Date(dateString);
-    const now = new Date();
-    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-  
-    let interval = seconds / 31536000;
-    if (interval > 1) return `${Math.floor(interval)}y`;
-  
-    interval = seconds / 2592000;
-    if (interval > 1) return `${Math.floor(interval)}mo`;
-  
-    interval = seconds / 86400;
-    if (interval > 1) return `${Math.floor(interval)}d`;
-  
-    interval = seconds / 3600;
-    if (interval > 1) return `${Math.floor(interval)}h`;
-  
-    interval = seconds / 60;
-    if (interval > 1) return `${Math.floor(interval)}m`;
-  
-    return `${Math.floor(seconds)}s`;
+function TimeAgo({ dateString }: { dateString: string }) {
+    const [ago, setAgo] = React.useState('');
+
+    React.useEffect(() => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+        let interval = seconds / 31536000;
+        if (interval > 1) {
+            setAgo(`${Math.floor(interval)}y ago`);
+            return;
+        }
+        interval = seconds / 2592000;
+        if (interval > 1) {
+            setAgo(`${Math.floor(interval)}mo ago`);
+            return;
+        }
+        interval = seconds / 86400;
+        if (interval > 1) {
+            setAgo(`${Math.floor(interval)}d ago`);
+            return;
+        }
+        interval = seconds / 3600;
+        if (interval > 1) {
+            setAgo(`${Math.floor(interval)}h ago`);
+            return;
+        }
+        interval = seconds / 60;
+        if (interval > 1) {
+            setAgo(`${Math.floor(interval)}m ago`);
+            return;
+        }
+        setAgo(`${Math.floor(seconds)}s ago`);
+    }, [dateString]);
+
+    return <>{ago}</>;
 }
 
 const followersChartConfig = {
@@ -198,7 +214,7 @@ export default function MyAnalyticsPage() {
                                           <TableCell><Badge variant="secondary">{post.mediaType}</Badge></TableCell>
                                           <TableCell>{formatMetric(post.metrics.likes)}</TableCell>
                                           <TableCell>{formatMetric(post.metrics.comments)}</TableCell>
-                                          <TableCell>{timeAgo(post.publishedAt)} ago</TableCell>
+                                          <TableCell><TimeAgo dateString={post.publishedAt} /></TableCell>
                                           <TableCell className="text-right">
                                               <Button asChild variant="ghost" size="sm">
                                                   <a href={post.url} target="_blank" rel="noopener noreferrer">View</a>
@@ -276,3 +292,5 @@ export default function MyAnalyticsPage() {
     </AppLayout>
   );
 }
+
+    
