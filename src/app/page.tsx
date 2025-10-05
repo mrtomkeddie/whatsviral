@@ -18,6 +18,7 @@ type TimeRange = "all" | "24h" | "7d" | "30d";
 type MediaType = "all" | "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM";
 type SortBy = "trending" | "top" | "likes" | "comments" | "newest" | "engagementRate";
 
+const POSTS_PER_PAGE = 8;
 
 export default function Home() {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -33,6 +34,9 @@ export default function Home() {
   const [sortBy, setSortBy] = React.useState<SortBy>("trending");
   const [minLikes, setMinLikes] = React.useState('');
   const [minComments, setMinComments] = React.useState('');
+
+  const [visiblePosts, setVisiblePosts] = React.useState<InstagramPost[]>([]);
+  const [numVisiblePosts, setNumVisiblePosts] = React.useState(POSTS_PER_PAGE);
   
   const handleFetchContent = async (mode: "trending" | "top") => {
     if (!query) return;
@@ -40,6 +44,7 @@ export default function Home() {
     setIsLoading(true);
     setAllResults([]);
     setInsights(null);
+    setNumVisiblePosts(POSTS_PER_PAGE);
     
     try {
       const response = await searchInstagramContent({
@@ -60,7 +65,6 @@ export default function Home() {
   const onTabChange = (value: string) => {
     const newTab = value as "trending" | "top";
     setActiveTab(newTab);
-    // Set default sort order when tab changes
     setSortBy(newTab);
     if(searchPerformed) {
         handleFetchContent(newTab);
@@ -129,7 +133,16 @@ export default function Home() {
     });
 
     setFilteredResults(results);
+    setNumVisiblePosts(POSTS_PER_PAGE);
   }, [allResults, timeRange, mediaType, sortBy, minLikes, minComments]);
+
+  React.useEffect(() => {
+    setVisiblePosts(filteredResults.slice(0, numVisiblePosts));
+  }, [filteredResults, numVisiblePosts]);
+
+  const handleLoadMore = () => {
+    setNumVisiblePosts(prev => prev + POSTS_PER_PAGE);
+  };
 
 
   return (
@@ -183,75 +196,83 @@ export default function Home() {
               </TabsList>
 
               {searchPerformed && (
-                <div className="my-6 flex flex-wrap items-center justify-center gap-4 text-sm">
-                    <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                        <Select value={timeRange} onValueChange={(v) => setTimeRange(v as TimeRange)}>
-                            <SelectTrigger className="w-[120px] h-9">
-                                <SelectValue placeholder="Time range" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Time</SelectItem>
-                                <SelectItem value="24h">Last 24h</SelectItem>
-                                <SelectItem value="7d">Last 7d</SelectItem>
-                                <SelectItem value="30d">Last 30d</SelectItem>
-                            </SelectContent>
-                        </Select>
+                <div className="my-6">
+                  <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
+                      <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                          <Select value={timeRange} onValueChange={(v) => setTimeRange(v as TimeRange)}>
+                              <SelectTrigger className="w-[120px] h-9">
+                                  <SelectValue placeholder="Time range" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                  <SelectItem value="all">All Time</SelectItem>
+                                  <SelectItem value="24h">Last 24h</SelectItem>
+                                  <SelectItem value="7d">Last 7d</SelectItem>
+                                  <SelectItem value="30d">Last 30d</SelectItem>
+                              </SelectContent>
+                          </Select>
+                      </div>
+                      <div className="flex items-center gap-2">
+                          <Layers className="h-4 w-4 text-muted-foreground" />
+                          <Select value={mediaType} onValueChange={(v) => setMediaType(v as MediaType)}>
+                              <SelectTrigger className="w-[120px] h-9">
+                                  <SelectValue placeholder="Media Type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                  <SelectItem value="all">All Media</SelectItem>
+                                  <SelectItem value="IMAGE">Image</SelectItem>
+                                  <SelectItem value="VIDEO">Video</SelectItem>
+                                  <SelectItem value="CAROUSEL_ALBUM">Carousel</SelectItem>
+                              </SelectContent>
+                          </Select>
+                      </div>
+                      <div className="flex items-center gap-2">
+                          <Heart className="h-4 w-4 text-muted-foreground" />
+                          <Input
+                              type="number"
+                              placeholder="Min likes"
+                              className="w-[120px] h-9"
+                              value={minLikes}
+                              onChange={(e) => setMinLikes(e.target.value)}
+                          />
+                      </div>
+                      <div className="flex items-center gap-2">
+                          <MessageCircle className="h-4 w-4 text-muted-foreground" />
+                          <Input
+                              type="number"
+                              placeholder="Min comments"
+                              className="w-[120px] h-9"
+                              value={minComments}
+                              onChange={(e) => setMinComments(e.target.value)}
+                          />
+                      </div>
+                      <Separator orientation="vertical" className="h-6 mx-2 hidden sm:block" />
+                      <div className="flex items-center gap-2">
+                          <ArrowDownUp className="h-4 w-4 text-muted-foreground" />
+                          <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortBy)}>
+                              <SelectTrigger className="w-[150px] h-9">
+                                  <SelectValue placeholder="Sort by" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                  {activeTab === 'trending' ? (
+                                    <SelectItem value="trending">Trending</SelectItem>
+                                  ) : (
+                                    <SelectItem value="top">Top Posts</SelectItem>
+                                  )}
+                                  <SelectItem value="engagementRate">Engagement Rate</SelectItem>
+                                  <SelectItem value="likes">Most Likes</SelectItem>
+                                  <SelectItem value="comments">Most Comments</SelectItem>
+                                  <SelectItem value="newest">Newest</SelectItem>
+                              </SelectContent>
+                          </Select>
+                      </div>
+                  </div>
+
+                  {visiblePosts.length > 0 && (
+                    <div className="text-center mt-6 text-sm text-muted-foreground">
+                      Showing {visiblePosts.length} of {filteredResults.length} posts
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Layers className="h-4 w-4 text-muted-foreground" />
-                        <Select value={mediaType} onValueChange={(v) => setMediaType(v as MediaType)}>
-                            <SelectTrigger className="w-[120px] h-9">
-                                <SelectValue placeholder="Media Type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Media</SelectItem>
-                                <SelectItem value="IMAGE">Image</SelectItem>
-                                <SelectItem value="VIDEO">Video</SelectItem>
-                                <SelectItem value="CAROUSEL_ALBUM">Carousel</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Heart className="h-4 w-4 text-muted-foreground" />
-                        <Input
-                            type="number"
-                            placeholder="Min likes"
-                            className="w-[120px] h-9"
-                            value={minLikes}
-                            onChange={(e) => setMinLikes(e.target.value)}
-                        />
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <MessageCircle className="h-4 w-4 text-muted-foreground" />
-                        <Input
-                            type="number"
-                            placeholder="Min comments"
-                            className="w-[120px] h-9"
-                            value={minComments}
-                            onChange={(e) => setMinComments(e.target.value)}
-                        />
-                    </div>
-                     <Separator orientation="vertical" className="h-6 mx-2 hidden sm:block" />
-                     <div className="flex items-center gap-2">
-                        <ArrowDownUp className="h-4 w-4 text-muted-foreground" />
-                        <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortBy)}>
-                            <SelectTrigger className="w-[150px] h-9">
-                                <SelectValue placeholder="Sort by" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {activeTab === 'trending' ? (
-                                  <SelectItem value="trending">Trending</SelectItem>
-                                ) : (
-                                  <SelectItem value="top">Top Posts</SelectItem>
-                                )}
-                                <SelectItem value="engagementRate">Engagement Rate</SelectItem>
-                                <SelectItem value="likes">Most Likes</SelectItem>
-                                <SelectItem value="comments">Most Comments</SelectItem>
-                                <SelectItem value="newest">Newest</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
+                  )}
                 </div>
               )}
 
@@ -262,6 +283,12 @@ export default function Home() {
                 {renderResults()}
               </TabsContent>
             </Tabs>
+
+            {visiblePosts.length < filteredResults.length && !isLoading && (
+              <div className="mt-8 text-center">
+                <Button onClick={handleLoadMore}>Load More</Button>
+              </div>
+            )}
           </div>
         </div>
       </main>
@@ -269,17 +296,17 @@ export default function Home() {
   );
 
   function renderResults() {
-    if (isLoading) {
+    if (isLoading && visiblePosts.length === 0) {
       return (
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {[...Array(8)].map((_, i) => (
+          {[...Array(POSTS_PER_PAGE)].map((_, i) => (
             <PostCard.Skeleton key={i} />
           ))}
         </div>
       );
     }
 
-    if (searchPerformed && filteredResults.length === 0) {
+    if (searchPerformed && visiblePosts.length === 0 && !isLoading) {
       return (
         <div className="mt-8 text-center py-16 px-4 bg-card border rounded-xl">
           <Instagram className="mx-auto h-12 w-12 text-muted-foreground" />
@@ -291,10 +318,10 @@ export default function Home() {
       );
     }
 
-    if (filteredResults.length > 0) {
+    if (visiblePosts.length > 0) {
       return (
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredResults.map((post) => (
+          {visiblePosts.map((post) => (
             <PostCard key={post.id} post={post} activeTab={activeTab} />
           ))}
         </div>
