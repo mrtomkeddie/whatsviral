@@ -133,7 +133,7 @@ export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 
 
   return (
     <>
-    <Card className="flex flex-col overflow-hidden transition-all hover:shadow-xl hover:-translate-y-1">
+    <Card className="flex flex-col transition-all hover:shadow-xl hover:-translate-y-1">
       {post.thumbnailUrl && (
         <div className="aspect-square relative">
             <Image src={post.thumbnailUrl} alt={post.caption} fill className="object-cover" />
