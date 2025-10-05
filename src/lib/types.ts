@@ -41,6 +41,8 @@ export type InstagramUserProfile = {
   engagementRate: number;
   avgLikes: number;
   avgComments: number;
+  postingFrequency: string;
+  mostEngagedPost?: InstagramPost;
   recentPosts: InstagramPost[];
   followerHistory: HistoryPoint[];
   engagementHistory: HistoryPoint[];

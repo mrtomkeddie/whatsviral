@@ -71,6 +71,7 @@ export const demoUserProfile: InstagramUserProfile = {
   engagementRate: 2.5,
   avgLikes: 3125,
   avgComments: 150,
+  postingFrequency: "1 post every 2 days",
   recentPosts: [
     {
       id: 'post1',

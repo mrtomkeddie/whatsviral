@@ -5,17 +5,14 @@ import * as React from 'react';
 import { AppLayout } from "@/components/app/AppLayout";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2, Search, UserX, LineChart, MessageCircle, Heart, Users, UserPlus, FileText, AtSign } from 'lucide-react';
+import { Loader2, Search, UserX, LineChart, MessageCircle, Heart, Users, UserPlus, FileText, AtSign, Clock, TrendingUp, Award, Star } from 'lucide-react';
 import { getUserAnalytics } from '@/ai/flows/user-analytics-flow';
 import type { InstagramUserProfile, HistoryPoint } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Line, LineChart as RechartsLineChart } from 'recharts';
-import { ChartConfig, ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
-
 
 function formatMetric(num?: number): string {
     if (num === undefined) return '0';
@@ -46,27 +43,6 @@ function timeAgo(dateString: string): string {
   
     return `${Math.floor(seconds)}s`;
 }
-
-const chartTooltipConfig = {
-  value: {
-    label: "Value",
-  },
-} satisfies ChartConfig
-
-const followersChartConfig = {
-    value: {
-      label: "Followers",
-      color: "hsl(var(--chart-1))",
-    },
-} satisfies ChartConfig
-
-const engagementChartConfig = {
-    value: {
-      label: "Engagement",
-      color: "hsl(var(--chart-2))",
-    },
-} satisfies ChartConfig
-
 
 export default function AnalyticsPage() {
     const [username, setUsername] = React.useState('');
@@ -163,6 +139,44 @@ export default function AnalyticsPage() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   <div className="lg:col-span-2 space-y-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">Avg. Likes</CardTitle>
+                          <Heart className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-2xl font-bold">{formatMetric(profile.avgLikes)}</div>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">Avg. Comments</CardTitle>
+                          <MessageCircle className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-2xl font-bold">{formatMetric(profile.avgComments)}</div>
+                        </CardContent>
+                      </Card>
+                       <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">Post Frequency</CardTitle>
+                          <Clock className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-sm font-bold">{profile.postingFrequency}</div>
+                        </CardContent>
+                      </Card>
+                       <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
+                          <FileText className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-2xl font-bold">{formatMetric(profile.postCount)}</div>
+                        </CardContent>
+                      </Card>
+                    </div>
                     
                     <Card>
                       <CardHeader>
@@ -227,15 +241,37 @@ export default function AnalyticsPage() {
                             )}
                         </CardContent>
                     </Card>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Post Engagement</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-sm text-muted-foreground">Follower and engagement trends are only available for personal accounts.</p>
-                        </CardContent>
-                    </Card>
-
+                    {profile.mostEngagedPost && (
+                         <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Star className="text-amber-400" />
+                                    Most Engaged Post
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                {profile.mostEngagedPost.thumbnailUrl && (
+                                     <a href={profile.mostEngagedPost.url} target="_blank" rel="noopener noreferrer">
+                                        <Image src={profile.mostEngagedPost.thumbnailUrl} alt={profile.mostEngagedPost.caption} width={400} height={400} className="rounded-lg object-cover w-full aspect-square" />
+                                     </a>
+                                )}
+                                <p className="text-sm text-muted-foreground line-clamp-2">{profile.mostEngagedPost.caption}</p>
+                                <div className="flex justify-between items-center text-sm">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-1.5 font-medium" title="Likes">
+                                            <Heart className="w-4 h-4 text-red-500" />
+                                            <span>{formatMetric(profile.mostEngagedPost.metrics.likes)}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 font-medium" title="Comments">
+                                            <MessageCircle className="w-4 h-4 text-sky-500" />
+                                            <span>{formatMetric(profile.mostEngagedPost.metrics.comments)}</span>
+                                        </div>
+                                    </div>
+                                    <Badge variant="outline">{timeAgo(profile.mostEngagedPost.publishedAt)} ago</Badge>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
                   </div>
                 </div>
 
