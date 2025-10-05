@@ -184,7 +184,7 @@ export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 
                 </div>
               </TooltipTrigger>
               <TooltipContent>
-                <p className="font-bold text-base">{scoreLabel}</p>
+                <p>{scoreLabel}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -238,3 +238,5 @@ PostCard.Skeleton = function PostCardSkeleton() {
         </Card>
     )
 }
+
+    

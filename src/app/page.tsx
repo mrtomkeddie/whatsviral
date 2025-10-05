@@ -5,7 +5,7 @@ import * as React from "react";
 import { AppLayout } from "@/components/app/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Instagram, Loader2, Image as ImageIcon, Video, Layers, Calendar, ArrowDownUp, Heart, MessageCircle, Clock, Percent } from "lucide-react";
+import { Search, Instagram, Loader2, Image as ImageIcon, Video, Layers, Calendar, ArrowDownUp, Heart, MessageCircle, Clock, Percent, TrendingUp, Award, Info } from "lucide-react";
 import { PostCard } from "@/components/app/PostCard";
 import { searchInstagramContent } from "@/ai/flows/search-flow";
 import type { InstagramPost, HashtagInsights as HashtagInsightsType } from "@/lib/types";
@@ -13,12 +13,51 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { HashtagInsights } from "@/components/app/HashtagInsights";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 type TimeRange = "all" | "24h" | "7d" | "30d";
 type MediaType = "all" | "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM";
 type SortBy = "trending" | "top" | "likes" | "comments" | "newest" | "engagementRate";
 
 const POSTS_PER_PAGE = 8;
+
+const ScoreGuide = () => (
+  <Card className="mt-8 bg-accent/50">
+    <CardHeader className="pb-4">
+      <CardTitle className="text-lg flex items-center gap-2">
+        <Info className="h-5 w-5" />
+        Understanding Scores
+      </CardTitle>
+    </CardHeader>
+    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+      <div>
+        <div className="flex items-center gap-2 font-semibold mb-2">
+          <TrendingUp className="h-5 w-5 text-primary" />
+          <span>Trending Score</span>
+        </div>
+        <p className="text-muted-foreground mb-3">
+          Measures recent engagement velocity. A high score means the post is gaining traction quickly right now.
+        </p>
+      </div>
+      <div>
+        <div className="flex items-center gap-2 font-semibold mb-2">
+          <Award className="h-5 w-5 text-primary" />
+          <span>Top Score</span>
+        </div>
+        <p className="text-muted-foreground mb-3">
+          Measures total overall engagement (likes and comments). A high score indicates strong all-time performance.
+        </p>
+      </div>
+       <div className="md:col-span-2">
+         <p className="text-muted-foreground text-xs text-center">
+            Performance badges are based on these scores: <Badge variant="outline" className="mx-1 bg-green-500/20 text-green-400 border-green-500/30">Viral (350+)</Badge> <Badge variant="outline" className="mx-1 bg-amber-500/20 text-amber-400 border-amber-500/30">Rising (150-349)</Badge> <Badge variant="outline" className="mx-1 bg-muted text-muted-foreground border-border">Normal (&lt;150)</Badge>
+        </p>
+      </div>
+    </CardContent>
+  </Card>
+);
+
 
 export default function Home() {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -189,7 +228,8 @@ export default function Home() {
           <div className="mt-12">
             {isLoading && <HashtagInsights.Skeleton />}
             {insights && <HashtagInsights insights={insights} />}
-            <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
+            {searchPerformed && <ScoreGuide />}
+            <Tabs value={activeTab} onValueChange={onTabChange} className="w-full mt-8">
               <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
                 <TabsTrigger value="trending">Trending</TabsTrigger>
                 <TabsTrigger value="top">Top Posts</TabsTrigger>
@@ -331,3 +371,5 @@ export default function Home() {
     return null;
   }
 }
+
+    
