@@ -238,5 +238,3 @@ PostCard.Skeleton = function PostCardSkeleton() {
         </Card>
     )
 }
-
-    

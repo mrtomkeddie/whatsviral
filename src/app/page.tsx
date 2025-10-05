@@ -295,9 +295,9 @@ export default function Home() {
                               </SelectTrigger>
                               <SelectContent>
                                   {activeTab === 'trending' ? (
-                                    <SelectItem value="trending">Trending</SelectItem>
+                                    <SelectItem value="trending">Trending Score</SelectItem>
                                   ) : (
-                                    <SelectItem value="top">Top Posts</SelectItem>
+                                    <SelectItem value="top">Top Score</SelectItem>
                                   )}
                                   <SelectItem value="engagementRate">Engagement Rate</SelectItem>
                                   <SelectItem value="likes">Most Likes</SelectItem>
