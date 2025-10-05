@@ -34,7 +34,7 @@ const ScoreGuide = () => (
       <div>
         <div className="flex items-center gap-2 font-semibold mb-2">
           <TrendingUp className="h-5 w-5 text-primary" />
-          <span>Trending Score</span>
+          <span>Trending Score (1-10)</span>
         </div>
         <p className="text-muted-foreground mb-3">
           Measures recent engagement velocity. A high score means the post is gaining traction quickly right now.
@@ -43,15 +43,15 @@ const ScoreGuide = () => (
       <div>
         <div className="flex items-center gap-2 font-semibold mb-2">
           <Award className="h-5 w-5 text-primary" />
-          <span>Top Score</span>
+          <span>Top Score (1-10)</span>
         </div>
         <p className="text-muted-foreground mb-3">
-          Measures total overall engagement (likes and comments). A high score indicates strong all-time performance.
+          Measures total overall engagement. A high score indicates strong all-time performance relative to other posts with this hashtag.
         </p>
       </div>
        <div className="md:col-span-2">
          <div className="text-muted-foreground text-xs text-center">
-            Performance badges are based on these scores: <Badge variant="outline" className="mx-1 bg-green-500/20 text-green-400 border-green-500/30">Viral (350+)</Badge> <Badge variant="outline" className="mx-1 bg-amber-500/20 text-amber-400 border-amber-500/30">Rising (150-349)</Badge> <Badge variant="outline" className="mx-1 bg-muted text-muted-foreground border-border">Normal (&lt;150)</Badge>
+            Performance badges are based on a 1-10 scale: <Badge variant="outline" className="mx-1 bg-green-500/20 text-green-400 border-green-500/30">Viral (8+)</Badge> <Badge variant="outline" className="mx-1 bg-amber-500/20 text-amber-400 border-amber-500/30">Rising (5-7.9)</Badge> <Badge variant="outline" className="mx-1 bg-muted text-muted-foreground border-border">Normal (&lt;5)</Badge>
         </div>
       </div>
     </CardContent>
@@ -106,7 +106,8 @@ export default function Home() {
     setActiveTab(newTab);
     setSortBy(newTab);
     if(searchPerformed) {
-        handleFetchContent(newTab);
+        // No need to re-fetch, just re-sort and filter.
+        // The sorting logic in useEffect will handle it.
     }
   }
 
@@ -173,7 +174,7 @@ export default function Home() {
 
     setFilteredResults(results);
     setNumVisiblePosts(POSTS_PER_PAGE);
-  }, [allResults, timeRange, mediaType, sortBy, minLikes, minComments]);
+  }, [allResults, timeRange, mediaType, sortBy, minLikes, minComments, activeTab]);
 
   React.useEffect(() => {
     setVisiblePosts(filteredResults.slice(0, numVisiblePosts));

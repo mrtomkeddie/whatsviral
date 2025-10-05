@@ -48,31 +48,45 @@ const searchContentFlow = ai.defineFlow(
         })
     );
 
-
     const processedPosts = enrichedPosts.map(post => {
       const likes = post.metrics.likes || 0;
       const comments = post.metrics.comments || 0;
       const ageHours = Math.max(1, (new Date().getTime() - new Date(post.publishedAt).getTime()) / (1000 * 60 * 60));
-      const authorFollowers = post.authorFollowers || 10000; // Assume 10k followers if not provided
+      const authorFollowers = post.authorFollowers || 10000;
 
-      const topScore = likes + (2 * comments);
-      const trendingScore = topScore / ageHours;
-
-      // Calculate engagement rate relative to author's followers
+      const rawTopScore = likes + (2 * comments);
+      const rawTrendingScore = rawTopScore / ageHours;
       const engagementRate = authorFollowers > 0 ? ((likes + comments) / authorFollowers) * 100 : 0;
 
       return {
         ...post,
         metrics: {
           ...post.metrics,
-          trendingScore: parseFloat(trendingScore.toFixed(1)),
-          topScore: parseFloat(topScore.toFixed(1)),
           engagementRate: parseFloat(engagementRate.toFixed(2)),
-        }
+        },
+        rawTopScore,
+        rawTrendingScore,
       };
     });
 
-    const results = processedPosts.sort((a, b) => {
+    const maxTopScore = Math.max(...processedPosts.map(p => p.rawTopScore));
+    const maxTrendingScore = Math.max(...processedPosts.map(p => p.rawTrendingScore));
+
+    const finalPosts = processedPosts.map(post => {
+        const topScore = maxTopScore > 0 ? (post.rawTopScore / maxTopScore) * 10 : 0;
+        const trendingScore = maxTrendingScore > 0 ? (post.rawTrendingScore / maxTrendingScore) * 10 : 0;
+
+        return {
+            ...post,
+            metrics: {
+                ...post.metrics,
+                topScore: parseFloat(topScore.toFixed(1)),
+                trendingScore: parseFloat(trendingScore.toFixed(1)),
+            }
+        };
+    });
+
+    const results = finalPosts.sort((a, b) => {
         if (input.mode === 'trending') {
             return (b.metrics.trendingScore || 0) - (a.metrics.trendingScore || 0);
         }

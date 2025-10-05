@@ -100,10 +100,10 @@ function PerformanceBadge({ score }: { score: number }) {
   let text = 'Normal';
   let className = '';
 
-  if (score >= 350) {
+  if (score >= 8) {
     text = 'Viral';
     className = 'bg-green-500/20 text-green-400 border-green-500/30';
-  } else if (score >= 150) {
+  } else if (score >= 5) {
     text = 'Rising';
     className = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
   } else {
