@@ -238,7 +238,7 @@ export default function MyAnalyticsPage() {
                             </Card>
                           </TooltipTrigger>
                            <TooltipContent>
-                             <p>(Likes + Comments) / Followers per post.</p>
+                             <p>The percentage of your followers that typically like or comment on your posts.</p>
                           </TooltipContent>
                         </UiTooltip>
                         <UiTooltip>
@@ -370,5 +370,7 @@ export default function MyAnalyticsPage() {
     </AppLayout>
   );
 }
+
+    
 
     
