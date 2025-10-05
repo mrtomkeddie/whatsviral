@@ -20,6 +20,8 @@ export type InstagramPost = {
   };
   thumbnailUrl?: string;
   mediaType: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM';
+  hook?: string;
+  patternTags?: string[];
 };
 
 export type HistoryPoint = {

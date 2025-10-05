@@ -16,6 +16,7 @@ import {
   type Mention,
   type RelatedHashtag,
 } from '@/lib/types';
+import { extractContentMetadata } from './extract-content-metadata';
 
 export async function searchInstagramContent(input: SearchContentInput): Promise<SearchContentOutput> {
   return searchContentFlow(input);
@@ -34,7 +35,20 @@ const searchContentFlow = ai.defineFlow(
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    const processedPosts = demoInstagramPosts.map(post => {
+    const enrichedPosts = await Promise.all(
+        demoInstagramPosts.map(async (post) => {
+            try {
+                const metadata = await extractContentMetadata({ text: post.caption });
+                return { ...post, ...metadata };
+            } catch (error) {
+                console.error(`Failed to get metadata for post ${post.id}`, error);
+                return post;
+            }
+        })
+    );
+
+
+    const processedPosts = enrichedPosts.map(post => {
       const likes = post.metrics.likes || 0;
       const comments = post.metrics.comments || 0;
       const ageHours = Math.max(1, (new Date().getTime() - new Date(post.publishedAt).getTime()) / (1000 * 60 * 60));
