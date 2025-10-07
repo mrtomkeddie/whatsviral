@@ -72,8 +72,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarFooter>
           <SidebarMenu className="p-4 items-center">
              <SidebarMenuItem>
-              <Link href="#" passHref>
-                <SidebarMenuButton tooltip="Settings">
+              <Link href="/settings" passHref>
+                <SidebarMenuButton isActive={pathname === '/settings'} tooltip="Settings">
                   <Settings />
                   <span>Settings</span>
                 </SidebarMenuButton>

@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { AppLayout } from "@/components/app/AppLayout";
 import { Loader2, LineChart, MessageCircle, Heart, Users, UserPlus, FileText, AtSign, Star, Instagram } from 'lucide-react';
-import { getUserAnalytics } from '@/ai/flows/user-analytics-flow';
+// import { getUserAnalytics } from '@/ai/flows/user-analytics-flow';
 import type { InstagramUserProfile, InstagramPost } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -126,20 +126,8 @@ export default function MyAnalyticsPage() {
     const [isMetaConnected, setIsMetaConnected] = React.useState(false);
 
     React.useEffect(() => {
-        const fetchMyAnalytics = async () => {
-            setIsLoading(true);
-            try {
-                const response = await getUserAnalytics({ username: 'travel.junkie' });
-                setProfile(response.profile);
-            } catch (error) {
-                console.error("Failed to fetch user analytics:", error);
-                setProfile(null);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         const checkMetaSession = async () => {
+            setIsLoading(true);
             try {
                 const res = await fetch('/api/auth/meta/session');
                 if (res.ok) {
@@ -149,14 +137,20 @@ export default function MyAnalyticsPage() {
                     setProfile(data.profile);
                   } else {
                     setIsMetaConnected(false);
+                    setProfile(null);
                   }
+                } else {
+                  setIsMetaConnected(false);
+                  setProfile(null);
                 }
             } catch (e) {
                 setIsMetaConnected(false);
+                setProfile(null);
+            } finally {
+                setIsLoading(false);
             }
         };
 
-        fetchMyAnalytics();
         checkMetaSession();
     }, []);
 
@@ -182,13 +176,16 @@ export default function MyAnalyticsPage() {
             
             {!isLoading && !profile && (
                 <div className="mt-8 text-center py-16 px-4 bg-card border rounded-xl">
-                    <h3 className="mt-4 text-lg font-semibold">Could Not Load Analytics</h3>
+                    <h3 className="mt-4 text-lg font-semibold">Sign in to see your insights</h3>
                     <p className="mt-2 text-sm text-muted-foreground">
-                        There was an error fetching your data. Please try again later.
+                        You need to connect your Instagram Business account first.
                     </p>
-                    <div className="mt-6">
+                    <div className="mt-6 flex justify-center gap-2">
                       <Button asChild>
-                        <a href="/api/auth/meta/start">Connect Instagram Business</a>
+                        <a href="/settings">Go to Settings</a>
+                      </Button>
+                      <Button asChild variant="outline">
+                        <a href="/api/auth/meta/start">Connect Instagram</a>
                       </Button>
                     </div>
                 </div>
