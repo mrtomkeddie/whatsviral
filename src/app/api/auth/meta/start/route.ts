@@ -7,7 +7,10 @@ function getEnv(name: string): string {
 }
 
 export async function GET(req: NextRequest) {
-  const appId = getEnv('META_APP_ID');
+  const appId = process.env.META_APP_ID;
+  if (!appId) {
+    return NextResponse.json({ error: 'META_APP_ID is not set in environment' }, { status: 500 });
+  }
   const redirectUri = process.env.META_REDIRECT_URI ?? new URL('/api/auth/meta/callback', req.nextUrl.origin).toString();
 
   // Minimal set of scopes to read pages and IG basic profile. Expand later as needed.
