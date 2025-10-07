@@ -136,6 +136,43 @@ const searchContentFlow = ai.defineFlow(
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
 
+    // Build dataset for AI Insight (MVP: fixed 7d window)
+    const formatDistribution = {
+      IMAGE: totalPosts > 0 ? (formatCounts['IMAGE'] || 0) / totalPosts : 0,
+      VIDEO: totalPosts > 0 ? (formatCounts['VIDEO'] || 0) / totalPosts : 0,
+      CAROUSEL_ALBUM: totalPosts > 0 ? (formatCounts['CAROUSEL_ALBUM'] || 0) / totalPosts : 0,
+    };
+
+    const trendingScores = results.map(p => p.metrics.trendingScore || 0);
+    const velocityScoreAvg = trendingScores.length > 0
+      ? trendingScores.reduce((s, v) => s + v, 0) / trendingScores.length
+      : 0;
+
+    const sortedVel = [...trendingScores].sort((a, b) => a - b);
+    const p90Index = sortedVel.length > 0
+      ? Math.max(0, Math.min(sortedVel.length - 1, Math.floor(0.9 * sortedVel.length) - 1))
+      : 0;
+    const velocityScoreP90 = sortedVel.length > 0 ? sortedVel[p90Index] : 0;
+
+    const relatedHashtagsForAI = topRelatedHashtags.map(h => ({
+      tag: h.hashtag.replace('#', ''),
+      count: h.count,
+    }));
+
+    const aiDataset = {
+      hashtag: input.hashtag.replace('#', ''),
+      time_range: '7d',
+      sample_size: totalPosts,
+      avg_likes: Math.round(avgLikes),
+      avg_comments: Math.round(avgComments),
+      format_distribution: formatDistribution,
+      top_format: topFormat,
+      velocity_score_avg: parseFloat(velocityScoreAvg.toFixed(1)),
+      velocity_score_p90: parseFloat(velocityScoreP90.toFixed(1)),
+      related_hashtags: relatedHashtagsForAI,
+    };
+
+
     return {
       posts: results,
       insights: {

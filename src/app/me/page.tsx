@@ -123,13 +123,12 @@ const PostListItem = ({ post }: { post: InstagramPost }) => (
 export default function MyAnalyticsPage() {
     const [isLoading, setIsLoading] = React.useState(true);
     const [profile, setProfile] = React.useState<InstagramUserProfile | null>(null);
+    const [isMetaConnected, setIsMetaConnected] = React.useState(false);
 
     React.useEffect(() => {
         const fetchMyAnalytics = async () => {
             setIsLoading(true);
             try {
-                // In a real app, you'd get the logged-in user's username.
-                // We'll use the demo user for this example.
                 const response = await getUserAnalytics({ username: 'travel.junkie' });
                 setProfile(response.profile);
             } catch (error) {
@@ -140,7 +139,25 @@ export default function MyAnalyticsPage() {
             }
         };
 
+        const checkMetaSession = async () => {
+            try {
+                const res = await fetch('/api/auth/meta/session');
+                if (res.ok) {
+                  const data = await res.json();
+                  if (data.connected && data.profile) {
+                    setIsMetaConnected(true);
+                    setProfile(data.profile);
+                  } else {
+                    setIsMetaConnected(false);
+                  }
+                }
+            } catch (e) {
+                setIsMetaConnected(false);
+            }
+        };
+
         fetchMyAnalytics();
+        checkMetaSession();
     }, []);
 
   return (
@@ -169,11 +186,28 @@ export default function MyAnalyticsPage() {
                     <p className="mt-2 text-sm text-muted-foreground">
                         There was an error fetching your data. Please try again later.
                     </p>
+                    <div className="mt-6">
+                      <Button asChild>
+                        <a href="/api/auth/meta/start">Connect Instagram Business</a>
+                      </Button>
+                    </div>
                 </div>
             )}
 
             {profile && (
               <div className="space-y-8">
+                {!isMetaConnected && (
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-muted-foreground">Connect your Instagram Business account to see live data.</p>
+                        <Button asChild>
+                          <a href="/api/auth/meta/start">Connect Instagram Business</a>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
                 <Card>
                   <CardContent className="p-6">
                     <div className="flex items-center gap-6">

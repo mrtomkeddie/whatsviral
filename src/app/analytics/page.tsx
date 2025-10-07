@@ -18,6 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { useSavedPosts } from '@/context/SavedPostsContext';
 
 function formatMetric(num?: number): string {
     if (num === undefined) return '0';
@@ -109,6 +110,7 @@ export default function AnalyticsPage() {
     const [isLoading, setIsLoading] = React.useState(false);
     const [profile, setProfile] = React.useState<InstagramUserProfile | null>(null);
     const [searchPerformed, setSearchPerformed] = React.useState(false);
+    const { addProfile, savedProfiles } = useSavedPosts();
 
     const handleSearch = async () => {
         if (!username) return;
@@ -189,9 +191,18 @@ export default function AnalyticsPage() {
                         <AvatarImage src={profile.profilePictureUrl} alt={profile.username} />
                         <AvatarFallback>{profile.username.charAt(0).toUpperCase()}</AvatarFallback>
                       </Avatar>
-                      <div className="grid gap-1">
+                      <div className="grid gap-1 flex-1">
                         <h2 className="text-2xl font-bold">{profile.fullName}</h2>
                         <a href={`https://instagram.com/${profile.username}`} target="_blank" rel="noopener noreferrer" className="text-lg text-muted-foreground hover:underline">@{profile.username}</a>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Button
+                          variant="default"
+                          onClick={() => addProfile(profile)}
+                          disabled={savedProfiles.some(p => p.id === profile.id)}
+                        >
+                          {savedProfiles.some(p => p.id === profile.id) ? 'Saved' : 'Save Profile'}
+                        </Button>
                       </div>
                     </div>
                   </CardContent>

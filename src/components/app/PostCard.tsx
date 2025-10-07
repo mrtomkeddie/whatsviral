@@ -34,6 +34,7 @@ import { Badge } from '../ui/badge';
 import React from 'react';
 import { SaveToCollectionDialog } from './SaveToCollectionDialog';
 import { cn } from '@/lib/utils';
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
 
 function formatMetric(num?: number): string {
     if (num === undefined) return '0';
@@ -111,8 +112,8 @@ function PerformanceBadge({ score, type }: { score: number, type: 'trending' | '
   )
 }
 
-export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 'trending' | 'top' }) {
-  const { savedPosts } = useSavedPosts();
+export function PostCard({ post, activeTab, showUnsave }: { post: InstagramPost, activeTab: 'trending' | 'top', showUnsave?: boolean }) {
+  const { savedPosts, removeSavedPost } = useSavedPosts();
   const [isSaveDialogOpen, setSaveDialogOpen] = React.useState(false);
   const isSaved = savedPosts.some(p => p.id === post.id);
 
@@ -124,7 +125,7 @@ export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 
     <>
     <Card className="flex flex-col transition-all hover:shadow-xl hover:-translate-y-1">
       {post.thumbnailUrl && (
-        <div className="aspect-square relative">
+        <div className="aspect-square relative overflow-hidden rounded-t-lg">
             <Image src={post.thumbnailUrl} alt={post.caption} fill className="object-cover" />
             <div className="absolute top-2 right-2 flex flex-col items-end gap-2">
               <MediaTypeIndicator type={post.mediaType} />
@@ -184,11 +185,36 @@ export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 
           </TooltipProvider>
           )}
         </div>
-        <div className="w-full border-t pt-3 flex">
+        <div className="w-full border-t pt-3 flex gap-2">
             <Button variant={isSaved ? "secondary" : "ghost"} size="sm" className="flex-1 justify-center" onClick={() => setSaveDialogOpen(true)}>
                 {isSaved ? <BookmarkCheck className="mr-2"/> : <Save className="mr-2"/>}
                 {isSaved ? "Saved" : "Save"}
             </Button>
+            <Button asChild variant="outline" size="sm" className="flex-1 justify-center">
+                <a href={post.url} target="_blank" rel="noopener noreferrer">
+                    <Instagram className="mr-2" />
+                    View on Instagram
+                </a>
+            </Button>
+            {showUnsave && isSaved && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" size="sm" className="flex-1 justify-center">Unsave</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Unsave this post?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will remove the post from all your collections.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => removeSavedPost(post.id)}>Unsave</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
         </div>
       </CardFooter>
     </Card>
@@ -204,7 +230,7 @@ export function PostCard({ post, activeTab }: { post: InstagramPost, activeTab: 
 PostCard.Skeleton = function PostCardSkeleton() {
     return (
         <Card className="flex flex-col">
-            <Skeleton className="aspect-square w-full" />
+            <Skeleton className="aspect-square w-full rounded-t-lg" />
             <CardHeader>
                 <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">

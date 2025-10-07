@@ -19,8 +19,7 @@ import {
   Bookmark,
   LayoutGrid,
   Send,
-  BarChart3,
-  Wallet
+  BarChart3
 } from "lucide-react";
 import { Logo } from "@/components/icons/Logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -46,33 +45,25 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </SidebarMenuItem>
             <SidebarMenuItem>
                <Link href="/analytics" passHref>
-                <SidebarMenuButton isActive={pathname === '/analytics'} tooltip="Public Analytics">
+                <SidebarMenuButton isActive={pathname === '/analytics'} tooltip="Profile Search">
                   <Send />
-                  <span>Public Analytics</span>
+                  <span>Profile Search</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
              <SidebarMenuItem>
                <Link href="/me" passHref>
-                <SidebarMenuButton isActive={pathname === '/me'} tooltip="My Analytics">
+                <SidebarMenuButton isActive={pathname === '/me'} tooltip="My Insights">
                   <BarChart3 />
-                  <span>My Analytics</span>
+                  <span>My Insights</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <Link href="/saved" passHref>
-                <SidebarMenuButton isActive={pathname === '/saved'} tooltip="Saved Items">
+                <SidebarMenuButton isActive={pathname === '/saved'} tooltip="Saved">
                   <Bookmark />
-                  <span>Saved Items</span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-               <Link href="/alerts" passHref>
-                <SidebarMenuButton isActive={pathname === '/alerts'} tooltip="Alerts">
-                  <Wallet />
-                  <span>Alerts</span>
+                  <span>Saved</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
@@ -81,10 +72,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarFooter>
           <SidebarMenu className="p-4 items-center">
              <SidebarMenuItem>
-              <SidebarMenuButton href="#" tooltip="Settings">
-                <Settings />
-                <span>Settings</span>
-              </SidebarMenuButton>
+              <Link href="#" passHref>
+                <SidebarMenuButton tooltip="Settings">
+                  <Settings />
+                  <span>Settings</span>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <Avatar className="h-9 w-9">

@@ -5,7 +5,7 @@ import * as React from "react";
 import { AppLayout } from "@/components/app/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Instagram, Loader2, Image as ImageIcon, Video, Layers, Calendar, ArrowDownUp, Heart, MessageCircle, Clock, Percent, TrendingUp, Award, Info } from "lucide-react";
+import { Search, Instagram, Loader2, Image as ImageIcon, Video, Layers, Calendar, ArrowDownUp, Clock, Percent, TrendingUp, Award, Info } from "lucide-react";
 import { PostCard } from "@/components/app/PostCard";
 import { searchInstagramContent } from "@/ai/flows/search-flow";
 import type { InstagramPost, HashtagInsights as HashtagInsightsType } from "@/lib/types";
@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { HashtagInsights } from "@/components/app/HashtagInsights";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 type TimeRange = "all" | "24h" | "7d" | "30d";
 type MediaType = "all" | "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM";
@@ -22,42 +23,58 @@ type SortBy = "trending" | "top" | "likes" | "comments" | "newest" | "engagement
 
 const POSTS_PER_PAGE = 8;
 
-const ScoreGuide = () => (
-    <Card className="mt-8 bg-accent/50">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-lg flex items-center justify-center gap-2">
-          <Info className="h-5 w-5" />
-          Understanding Scores
-        </CardTitle>
+const ScoreGuide = ({ activeTab }: { activeTab: "trending" | "top" }) => {
+  const isTrending = activeTab === "trending";
+
+  return (
+    <Card className="mt-8 overflow-hidden border border-border/50 bg-gradient-to-br from-background/60 to-accent/40 rounded-xl">
+      <CardHeader className="pb-0">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="rounded-full bg-primary/15 text-primary p-2 ring-1 ring-primary/20">
+               {isTrending ? (
+                 <TrendingUp className="h-5 w-5" />
+               ) : (
+                 <Award className="h-5 w-5" />
+               )}
+             </div>
+             <div>
+               <CardTitle className="text-xl font-semibold">
+                 {isTrending ? "Trending Score" : "Top Score"}{" "}
+                 <span className="text-muted-foreground font-normal">(1–10)</span>
+               </CardTitle>
+               <p className="text-xs text-muted-foreground">Understanding Scores</p>
+             </div>
+          </div>
+
+          {/* Helper icon removed */}
+        </div>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 text-center md:text-left">
-          <div className="flex flex-col items-center md:items-start">
-            <div className="flex items-center gap-2 font-semibold mb-2">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              <span>Trending Score (1-10)</span>
-            </div>
-            <div className="text-muted-foreground text-sm">
-              Measures recent engagement velocity. A high score means the post is gaining traction quickly. Posts with a score of 8+ are marked as <Badge variant="outline" className="text-xs bg-green-500/20 text-green-400 border-green-500/30">Viral</Badge>.
-            </div>
+
+      <CardContent className="pt-4">
+        <div className="max-w-3xl">
+          <p className="text-base leading-relaxed text-muted-foreground">
+            {isTrending
+              ? "Measures recent engagement velocity. A high score means the post is gaining traction quickly."
+              : "Measures total overall engagement relative to other posts for the hashtag. A high score indicates strong all-time performance."}
+          </p>
+          <div className="text-base leading-relaxed text-muted-foreground mt-2">
+            Posts with a score of 8+ are marked as{" "}
+            <Badge
+              variant="outline"
+              className="align-middle text-xs bg-green-500/15 text-green-400 border-green-500/30 inline-flex items-center"
+            >
+              Viral
+            </Badge>
+            .
           </div>
-          <div className="relative flex items-center justify-center">
-            <Separator orientation="vertical" className="h-full absolute left-0 hidden md:block" />
-            <div className="w-full h-[1px] bg-border md:hidden" />
-          </div>
-          <div className="flex flex-col items-center md:items-start">
-            <div className="flex items-center gap-2 font-semibold mb-2">
-              <Award className="h-5 w-5 text-primary" />
-              <span>Top Score (1-10)</span>
-            </div>
-            <div className="text-muted-foreground text-sm">
-              Measures total overall engagement relative to other posts for the hashtag. A high score indicates strong all-time performance. Posts with a score of 8+ are marked as <Badge variant="outline" className="text-xs bg-green-500/20 text-green-400 border-green-500/30">Viral</Badge>.
-            </div>
-          </div>
+
+          {/* Tip line removed */}
         </div>
       </CardContent>
     </Card>
-);
+  );
+};
 
 
 export default function Home() {
@@ -72,8 +89,6 @@ export default function Home() {
   const [timeRange, setTimeRange] = React.useState<TimeRange>("all");
   const [mediaType, setMediaType] = React.useState<MediaType>("all");
   const [sortBy, setSortBy] = React.useState<SortBy>("trending");
-  const [minLikes, setMinLikes] = React.useState('');
-  const [minComments, setMinComments] = React.useState('');
 
   const [visiblePosts, setVisiblePosts] = React.useState<InstagramPost[]>([]);
   const [numVisiblePosts, setNumVisiblePosts] = React.useState(POSTS_PER_PAGE);
@@ -135,21 +150,7 @@ export default function Home() {
       results = results.filter(post => post.mediaType === mediaType);
     }
 
-    // Filter by min likes
-    if (minLikes) {
-        const likes = parseInt(minLikes, 10);
-        if (!isNaN(likes)) {
-            results = results.filter(post => (post.metrics.likes || 0) >= likes);
-        }
-    }
 
-    // Filter by min comments
-    if (minComments) {
-        const comments = parseInt(minComments, 10);
-        if (!isNaN(comments)) {
-            results = results.filter(post => (post.metrics.comments || 0) >= comments);
-        }
-    }
     
     // Sort results
     results.sort((a, b) => {
@@ -175,7 +176,7 @@ export default function Home() {
 
     setFilteredResults(results);
     setNumVisiblePosts(POSTS_PER_PAGE);
-  }, [allResults, timeRange, mediaType, sortBy, minLikes, minComments, activeTab]);
+  }, [allResults, timeRange, mediaType, sortBy, activeTab]);
 
   React.useEffect(() => {
     setVisiblePosts(filteredResults.slice(0, numVisiblePosts));
@@ -230,7 +231,8 @@ export default function Home() {
           <div className="mt-12">
             {isLoading && <HashtagInsights.Skeleton />}
             {insights && <HashtagInsights insights={insights} />}
-            {searchPerformed && <ScoreGuide />}
+            {/* Compact popover replaces large ScoreGuide card */}
+            {/* {searchPerformed && <ScoreGuide activeTab={activeTab} />} */}
             <Tabs value={activeTab} onValueChange={onTabChange} className="w-full mt-8">
               <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
                 <TabsTrigger value="trending">Trending</TabsTrigger>
@@ -268,26 +270,6 @@ export default function Home() {
                               </SelectContent>
                           </Select>
                       </div>
-                      <div className="flex items-center gap-2">
-                          <Heart className="h-4 w-4 text-muted-foreground" />
-                          <Input
-                              type="number"
-                              placeholder="Min likes"
-                              className="w-[120px] h-9"
-                              value={minLikes}
-                              onChange={(e) => setMinLikes(e.target.value)}
-                          />
-                      </div>
-                      <div className="flex items-center gap-2">
-                          <MessageCircle className="h-4 w-4 text-muted-foreground" />
-                          <Input
-                              type="number"
-                              placeholder="Min comments"
-                              className="w-[120px] h-9"
-                              value={minComments}
-                              onChange={(e) => setMinComments(e.target.value)}
-                          />
-                      </div>
                       <Separator orientation="vertical" className="h-6 mx-2 hidden sm:block" />
                       <div className="flex items-center gap-2">
                           <ArrowDownUp className="h-4 w-4 text-muted-foreground" />
@@ -308,6 +290,35 @@ export default function Home() {
                               </SelectContent>
                           </Select>
                       </div>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-9 px-3">
+                            <Info className="h-4 w-4 mr-2" />
+                            Score guide
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-80 p-4">
+                          <div className="space-y-2">
+                            <h4 className="text-sm font-medium">{activeTab === 'trending' ? 'Trending Score (1–10)' : 'Top Score (1–10)'}</h4>
+                            <p className="text-sm text-muted-foreground">
+                              {activeTab === 'trending'
+                                ? 'Measures recent engagement velocity. A higher score means the post is gaining traction quickly.'
+                                : 'Measures total overall engagement relative to other posts for the hashtag. A high score indicates strong all-time performance.'}
+                            </p>
+                            <div className="flex items-center gap-2">
+                              <Badge variant="secondary">{activeTab === 'trending' ? 'Viral' : 'Top'}</Badge>
+                              <span className="text-xs text-muted-foreground sm:hidden">
+                                {activeTab === 'trending' ? 'Viral at 8+' : 'Top at 8+'}
+                              </span>
+                              <span className="text-xs text-muted-foreground hidden sm:inline">
+                                {activeTab === 'trending'
+                                  ? 'Viral badge appears for scores of 8 or higher'
+                                  : 'Top badge appears for scores of 8 or higher'}
+                              </span>
+                            </div>
+                          </div>
+                        </PopoverContent>
+                      </Popover>
                   </div>
 
                   {visiblePosts.length > 0 && (
