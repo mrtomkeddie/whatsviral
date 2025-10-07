@@ -81,7 +81,7 @@ function setEncryptedCookie(resp: NextResponse, name: string, value: string, max
 }
 
 export async function GET(req: NextRequest) {
-  const redirectUri = getEnv('META_REDIRECT_URI');
+  const redirectUri = process.env.META_REDIRECT_URI ?? new URL('/api/auth/meta/callback', req.nextUrl.origin).toString();
   const url = new URL(req.url);
   const code = url.searchParams.get('code');
   const error = url.searchParams.get('error');
